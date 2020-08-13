@@ -23,6 +23,7 @@ function uploadMealInfo() {
         for (const ingredient of meal.ingredients) {
             ingredientsElement.appendChild(createMyElement(ingredient, 'li'));
         }
+        createMap();
     });
 }
 
@@ -30,4 +31,14 @@ function createMyElement(text, type) {
   const element = document.createElement(type);
   element.innerText = text;
   return element;
+}
+
+/** Creates a map and adds it to the page. */
+function createMap() {
+  const styleOptions = [];
+  const mapOptions = {
+    zoom: 16,
+    center: {lat: 55.746514, lng: 37.627022},
+  };
+  const map = new google.maps.Map(document.getElementById("map"), mapOptions);
 }
