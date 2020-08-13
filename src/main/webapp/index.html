@@ -6,8 +6,13 @@
     <link rel="stylesheet" href="style.css"></link>
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="searchDishes()">
     <h1>Meal Assistant</h1>
     <p>Test message</p>
+    <form action="/search-dishes" method="POST">
+        <input type="text" id="text" name="text" placeholder="Search..">
+        <input type='submit' >
+    </form>
+    <div id="dishes-container"></div>
   </body>
 </html>
