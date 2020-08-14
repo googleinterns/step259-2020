@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function searchDishes() {
-    fetch('/search-dishes').then(response => response.json()).then((dishes) => 
+function searchMeal() {
+    fetch('/search-meal').then(response => response.json()).then((dishes) => 
     {
         let container = document.getElementById("dishes-container");
         container.innerText = "";
@@ -24,8 +24,8 @@ function searchDishes() {
     });
 }
 
-function createListElement(dish) {
-    const listElement = document.createElement('p');
-    listElement.innerText = dish;
+function createListElement(val) {
+    const listElement = document.createElement('li');
+    listElement.innerText = val;
     return listElement;
 }
