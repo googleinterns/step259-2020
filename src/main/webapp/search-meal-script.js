@@ -13,7 +13,7 @@
 // limitations under the License.
 
 function searchMeal() {
-    fetch('/search-meal').then(response => response.json()).then((dishes) => 
+    fetch('/meal').then(response => response.json()).then((dishes) => 
     {
         const container = document.getElementById("dishes-container");
         container.innerText = "";
