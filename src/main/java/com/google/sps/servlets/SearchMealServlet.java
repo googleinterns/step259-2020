@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
-@WebServlet("/search-dishes")
+@WebServlet("/search-meal")
 public class SearchMealServlet extends HttpServlet {
 
     private ArrayList<String> dishes;
