@@ -12,33 +12,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function uploadMealInfo() {
+function fetchMealInfo() {
     fetch('/meal-info').then(response => response.json()).then((meal) => 
     {
+        const { title, description, ingredients } = meal;
         const titleElement = document.getElementById("title");
-        titleElement.innerText = meal.title;
+        titleElement.innerText = title;
         const descriptionElement = document.getElementById("description");
-        descriptionElement.innerText = meal.description;
+        descriptionElement.innerText = description;
         const ingredientsElement = document.getElementById("ingredients");
-        for (const ingredient of meal.ingredients) {
-            ingredientsElement.appendChild(createMyElement(ingredient, 'li'));
+        for (const ingredient of ingredients) {
+            ingredientsElement.appendChild(createElementByTag(ingredient, 'li'));
         }
         createMap();
     });
 }
 
-function createMyElement(text, type) {
-  const element = document.createElement(type);
+function createElementByTag(text, tag) {
+  const element = document.createElement(tag);
   element.innerText = text;
   return element;
 }
 
 /** Creates a map and adds it to the page. */
 function createMap() {
-  const styleOptions = [];
+  const userLocation = new google.maps.LatLng(55.746514, 37.627022);
   const mapOptions = {
     zoom: 16,
-    center: {lat: 55.746514, lng: 37.627022},
+    center: userLocation
   };
   const map = new google.maps.Map(document.getElementById("map"), mapOptions);
+  // TODO(grenlayk): implement real geolocation here
+  // TODO(grenlayk): change "You are here" marker on custom one
+  const locationMarker = new google.maps.Marker({
+    position: userLocation,
+    map,
+    title: "You are here",
+    animation: google.maps.Animation.DROP,
+  });
+  // TODO(grenlayk): implement restaurants search here
 }

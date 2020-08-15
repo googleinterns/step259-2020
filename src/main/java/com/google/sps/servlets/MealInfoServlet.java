@@ -30,9 +30,11 @@ public class MealInfoServlet extends HttpServlet {
 
   Meal meal;
 
+  // TODO(grenlayk): implement getting meal info by id (probably in another servlet according to REST API)
+
   @Override
   public void init() {
-    meal = new Meal("Ice cream", "Chocolate ice cream with strawberries", new ArrayList<String>(Arrays.asList("Ice cream", "Strawberry")), "Dessert");
+    meal = new Meal(new Long(0), "Ice cream", "Chocolate ice cream with strawberries", new ArrayList<String>(Arrays.asList("Ice cream", "Strawberry")), "Dessert");
   }
 
   @Override
