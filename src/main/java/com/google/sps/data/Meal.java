@@ -31,11 +31,7 @@ public class Meal {
         this.type = type;
     }
 
-    public Meal(int id, String title, String description, ArrayList<String> ingredients, String type) {
-        this(new Long(id), title, description, ingredients, type);
-    }
-
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 

@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.sps.data.Meal;
 
-@WebServlet("/meal-info")
-public class MealInfoServlet extends HttpServlet {
+@WebServlet("/meal")
+public class MealServlet extends HttpServlet {
 
   Meal meal;
 
@@ -34,7 +34,7 @@ public class MealInfoServlet extends HttpServlet {
 
   @Override
   public void init() {
-    meal = new Meal(new Long(0), "Ice cream", "Chocolate ice cream with strawberries", new ArrayList<String>(Arrays.asList("Ice cream", "Strawberry")), "Dessert");
+    meal = new Meal(0L, "Ice cream", "Chocolate ice cream with strawberries", new ArrayList<String>(Arrays.asList("Ice cream", "Strawberry")), "Dessert");
   }
 
   @Override

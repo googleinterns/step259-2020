@@ -13,7 +13,7 @@
 // limitations under the License.
 
 function fetchMealInfo() {
-    fetch('/meal-info').then(response => response.json()).then((meal) => 
+    fetch('/meal').then(response => response.json()).then((meal) => 
     {
         const { title, description, ingredients } = meal;
         const titleElement = document.getElementById("title");
@@ -28,6 +28,7 @@ function fetchMealInfo() {
     });
 }
 
+// solution from https://stackoverflow.com/questions/20174280/nodejs-convert-string-into-utf-8
 function encodingCheck(string) {
     return JSON.parse(JSON.stringify(string));
 }
