@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 @WebServlet("/search-meal")
 public class SearchMealServlet extends HttpServlet {
 
+    // TODO: use Meal class instead of String
     private ArrayList<String> dishes;
     private ArrayList<String> result;
 
