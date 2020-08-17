@@ -3,11 +3,15 @@
   <head>
     <meta charset="UTF-8">
     <title>Meal Assistant</title>
-    <link rel="stylesheet" href="style.css"></link>
-    <script src="script.js"></script>
+    <script src="search-meal-script.js"></script>
   </head>
-  <body>
+  <body onload="searchMeal()">
     <h1>Meal Assistant</h1>
     <p>Test message</p>
+    <form action="/search-meal" method="POST">
+        <input type="text" id="text" name="text" placeholder="Search..">
+        <input type='submit' >
+    </form>
+    <div id="dishes-container"></div>
   </body>
 </html>
