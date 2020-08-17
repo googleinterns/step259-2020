@@ -15,7 +15,7 @@
 function searchMeal() {
     fetch('/search-meal').then(response => response.json()).then((dishes) => 
     {
-        const container = document.getElementById("dishes-container");
+        let container = document.getElementById("dishes-container");
         container.innerText = "";
         dishes = dishes ?? [""];
         dishes.forEach((dish) => {
