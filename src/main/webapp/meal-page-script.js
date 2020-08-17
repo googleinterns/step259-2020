@@ -17,15 +17,19 @@ function fetchMealInfo() {
     {
         const { title, description, ingredients } = meal;
         const titleElement = document.getElementById("title");
-        titleElement.innerText = title;
+        titleElement.innerText = encodingCheck(title);
         const descriptionElement = document.getElementById("description");
-        descriptionElement.innerText = description;
+        descriptionElement.innerText = encodingCheck(description);
         const ingredientsElement = document.getElementById("ingredients");
         for (const ingredient of ingredients) {
-            ingredientsElement.appendChild(createElementByTag(ingredient, 'li'));
+            ingredientsElement.appendChild(createElementByTag(encodingCheck(ingredient), 'li'));
         }
         createMap();
     });
+}
+
+function encodingCheck(string) {
+    return JSON.parse(JSON.stringify(string));
 }
 
 function createElementByTag(text, tag) {
