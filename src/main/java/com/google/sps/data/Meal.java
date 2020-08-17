@@ -17,21 +17,22 @@ package com.google.sps.data;
 import java.util.ArrayList;
 
 public class Meal {
-    private final long Id;
+    private final Long id;
     private final String title;
     private final String description;
     private final ArrayList<String> ingredients;
     private final String type;
 
-    public Meal(long Id, String title, String description, ArrayList<String> ingredients, String type) {
-        this.Id = Id;
+    public Meal(Long id, String title, String description, ArrayList<String> ingredients, String type) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.ingredients = new ArrayList<String>(ingredients);
         this.type = type;
     }
 
-    public long getId() {
-        return this.Id;
+    public Long getId() {
+        return this.id;
     }
+
 }
