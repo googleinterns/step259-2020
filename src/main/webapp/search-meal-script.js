@@ -17,15 +17,15 @@ function searchMeal() {
     {
         const container = document.getElementById("dishes-container");
         container.innerText = "";
-        dishes = dishes ?? [""];
-        dishes.forEach((dish) => {
-            container.appendChild(createListElement(dish));
+        dishes = dishes ?? {0: ""};
+        Object.entries(dishes).forEach((dish) => {
+            container.appendChild(createListElement(dish[1]));
         });
     });
 }
 
-function createListElement(val) {
+function createListElement(obj) {
     const listElement = document.createElement('li');
-    listElement.innerText = val;
+    listElement.innerText = obj.title;
     return listElement;
 }
