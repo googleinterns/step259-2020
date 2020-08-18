@@ -15,7 +15,6 @@
 function fetchMealInfo() {
     fetch('/meal/0').then(response => response.json()).then((meal) => 
     {
-        console.log(meal);
         const { title, description, ingredients } = meal;
         const titleElement = document.getElementById("title");
         titleElement.innerText = encodingCheck(title);
