@@ -1,11 +1,11 @@
 // Copyright 2020 Google LLC
-
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-
+//
 //     https://www.apache.org/licenses/LICENSE-2.0
-
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,33 +15,108 @@
 package com.google.sps.servlets;
 
 import java.io.IOException;
-import javax.servlet.annotation.WebServlet;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.sps.data.Meal;
 
-@WebServlet("/meal")
+
+@WebServlet("/meal/*")
 public class MealServlet extends HttpServlet {
 
-  Meal meal;
+    private final HashMap<Long, Meal> dishes = new HashMap<Long, Meal> ();
 
-  // TODO(grenlayk): implement getting meal info by id (probably in another servlet according to REST API)
+    @Override
+    public void init() {
+        // TODO(sandatsian): implement uploading of dataset from website here
+        dishes.put(0L, new Meal(0L, "fried potato", "fried potato with mushrooms and onion",
+            new ArrayList<>(Arrays.asList("potato", "onion", "mushrooms", "oil")), "Main"));
+        dishes.put(1L, new Meal(1L, "Italian pizza", "Pizza with pineaple, sausage and tomato",
+            new ArrayList<>(Arrays.asList("flour", "water", "sausage", "tomato", "pineaple", "cheese")), "pizza"));
+        dishes.put(2L, new Meal(2L, "vegetable soup", "vegetable soup with onion",
+            new ArrayList<>(Arrays.asList("potato", "onion", "cabbage", "mushrooms", "water", "carrot", "pumpkin")), "soup"));
+        dishes.put(3L, new Meal(3L, "chocolate cake", "chocolate cake with butter cream and strawberry",
+            new ArrayList<>(Arrays.asList("flour", "water", "butter", "cacao", "chocolate", "sugar", "strawberry", "eggs")), "dessert"));
+        dishes.put(4L, new Meal(4L, "hot chocolate", "hot chocolate with sugar and caramel",
+            new ArrayList<>(Arrays.asList("cacao", "sugar", "milk", "caramel", "vanil")), "drinks"));
+    }
 
-  @Override
-  public void init() {
-    meal = new Meal(0L, "Ice cream", "Chocolate ice cream with strawberries", new ArrayList<String>(Arrays.asList("Ice cream", "Strawberry")), "Dessert");
-  }
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String pathInfo = request.getPathInfo();
 
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String gson = new Gson().toJson(meal);
+        // Get meal
+        // GET meal/
+        if (pathInfo == null || pathInfo.equals("/")) {
+            searchMeal(request, response);
+            return;
+        }
 
-    response.setContentType("application/json");
-    response.getWriter().println(gson);
-  }
+        // GET meal/meal_id
+        if (pathInfo.split("/").length == 2) {
+            getMealById(request, response);
+            return;
+        }
+
+        // Invalid request format
+        // GET meal/*/*
+        if (pathInfo.split("/").length != 2) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        return;
+    }
+
+    private void searchMeal(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Fuction returns hardcoded result
+        // TODO(sandatsian): implement search algorithm here for MVP
+        String gson = new Gson().toJson(dishes);
+        response.setContentType("application/json");
+        response.getWriter().println(gson);
+        return;
+    }
+
+    private void getMealById(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String pathInfo = request.getPathInfo();
+        String idString = pathInfo.replaceAll("/", "");
+
+        Long id = null;
+        try {
+            id = Long.parseLong(idString);
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        Meal meal = dishes.get(id);
+
+        if (meal != null) {
+            String gson = new Gson().toJson(meal);
+            response.setContentType("application/json");
+            response.getWriter().println(gson);
+            return;
+        }
+
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        return;
+    }
+
+
+    private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+        String value = request.getParameter(name);
+        if (value == null) {
+            return defaultValue;
+        }
+        return value;
+    }
 }
