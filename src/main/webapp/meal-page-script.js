@@ -13,7 +13,13 @@
 // limitations under the License.
 
 function fetchMealInfo() {
-    fetch('/meal/0').then(response => response.json()).then((meal) => 
+    // use mapping /meal.html?id=<id> 
+    // fetches form server by action meal/<id>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const id = urlParams.get("id");
+
+    fetch('/meal/' + id.toString()).then(response => response.json()).then((meal) => 
     {
         const { title, description, ingredients } = meal;
         const titleElement = document.getElementById("title");

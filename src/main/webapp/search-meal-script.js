@@ -26,6 +26,11 @@ function searchMeal() {
 
 function createListElement(obj) {
     const listElement = document.createElement('li');
+    const id = obj.id;
     listElement.innerText = obj.title;
+    listElement.onclick = function() {
+        location.href = 'meal.html?id=' + id.toString();
+    };
     return listElement;
 }
+
