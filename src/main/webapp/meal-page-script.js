@@ -13,8 +13,9 @@
 // limitations under the License.
 
 function fetchMealInfo() {
-    fetch('/meal').then(response => response.json()).then((meal) => 
+    fetch('/meal/0').then(response => response.json()).then((meal) => 
     {
+        console.log(meal);
         const { title, description, ingredients } = meal;
         const titleElement = document.getElementById("title");
         titleElement.innerText = encodingCheck(title);
