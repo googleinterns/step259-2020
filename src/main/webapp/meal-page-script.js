@@ -57,7 +57,7 @@ function createElementByTag(text, tag) {
 
 function redirectToSimilar() {
     fetch('/meal/similar').then(response => response.json()).then((id) => {
-        const url = '/meal.html?id=' + id.toString();
+        const url = `/meal.html?id=${id.toString()}`;
         window.location.replace(url);
     });
 }
