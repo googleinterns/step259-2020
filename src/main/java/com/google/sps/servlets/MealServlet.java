@@ -11,13 +11,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package com.google.sps.servlets;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,26 +27,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.sps.data.Meal;
-import java.util.HashMap;
+
 
 @WebServlet("/meal/*")
 public class MealServlet extends HttpServlet {
 
-    private final HashMap <Long, Meal> dishes = new HashMap <Long, Meal> ();
+    private final HashMap<Long, Meal> dishes = new HashMap<Long, Meal> ();
 
     @Override
     public void init() {
         // TODO(sandatsian): implement uploading of dataset from website here
         dishes.put(0L, new Meal(0L, "fried potato", "fried potato with mushrooms and onion",
-            new ArrayList <> (Arrays.asList("potato", "onion", "mushrooms", "oil")), "Main"));
+            new ArrayList<>(Arrays.asList("potato", "onion", "mushrooms", "oil")), "Main"));
         dishes.put(1L, new Meal(1L, "Italian pizza", "Pizza with pineaple, sausage and tomato",
-            new ArrayList <> (Arrays.asList("flour", "water", "sausage", "tomato", "pineaple", "cheese")), "pizza"));
+            new ArrayList<>(Arrays.asList("flour", "water", "sausage", "tomato", "pineaple", "cheese")), "pizza"));
         dishes.put(2L, new Meal(2L, "vegetable soup", "vegetable soup with onion",
-            new ArrayList <> (Arrays.asList("potato", "onion", "cabbage", "mushrooms", "water", "carrot", "pumpkin")), "soup"));
+            new ArrayList<>(Arrays.asList("potato", "onion", "cabbage", "mushrooms", "water", "carrot", "pumpkin")), "soup"));
         dishes.put(3L, new Meal(3L, "chocolate cake", "chocolate cake with butter cream and strawberry",
-            new ArrayList <> (Arrays.asList("flour", "water", "butter", "cacao", "chocolate", "sugar", "strawberry", "eggs")), "dessert"));
+            new ArrayList<>(Arrays.asList("flour", "water", "butter", "cacao", "chocolate", "sugar", "strawberry", "eggs")), "dessert"));
         dishes.put(4L, new Meal(4L, "hot chocolate", "hot chocolate with sugar and caramel",
-            new ArrayList <> (Arrays.asList("cacao", "sugar", "milk", "caramel", "vanil")), "drinks"));
+            new ArrayList<>(Arrays.asList("cacao", "sugar", "milk", "caramel", "vanil")), "drinks"));
     }
 
     @Override
