@@ -13,21 +13,32 @@
 // limitations under the License.
 
 function fetchMealInfo() {
-  fetch("/meal/0")
-    .then((response) => response.json())
-    .then((meal) => {
-      const { title, description, ingredients } = meal;
-      const titleElement = document.getElementById("title");
-      titleElement.innerText = encodingCheck(title);
-      const descriptionElement = document.getElementById("description");
-      descriptionElement.innerText = encodingCheck(description);
-      const ingredientsElement = document.getElementById("ingredients");
-      for (const ingredient of ingredients) {
-        ingredientsElement.appendChild(
-          createElementByTag(encodingCheck(ingredient), "li")
-        );
-      }
-      createMap();
+    // use mapping /meal.html?id=<id> 
+    // fetches form server by action meal/<id>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const id = urlParams.get("id") ?? 0;
+
+    fetch('/meal/' + id.toString()).then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }).then((meal) => 
+    {
+        const { title, description, ingredients } = meal;
+        const titleElement = document.getElementById("title");
+        titleElement.innerText = encodingCheck(title);
+        const descriptionElement = document.getElementById("description");
+        descriptionElement.innerText = encodingCheck(description);
+        const ingredientsElement = document.getElementById("ingredients");
+        for (const ingredient of ingredients) {
+            ingredientsElement.appendChild(createElementByTag(encodingCheck(ingredient), 'li'));
+        }
+        createMap();
+    }).catch((error) => {
+        //TODO(sandatsian): display error page
+        console.log(error);
     });
 }
 
