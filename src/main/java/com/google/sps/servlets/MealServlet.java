@@ -124,9 +124,8 @@ public class MealServlet extends HttpServlet {
         // TODO(grenlayk): implement suggestions algorithm here for Product Alpha
         Random rand = new Random(); 
         int randomId = rand.nextInt(dishes.size()); 
-        String url = "/meal.html" + "?id=" + Integer.toString(randomId);
         
-        String gson = new Gson().toJson(url);
+        String gson = new Gson().toJson(randomId);
         response.setContentType("application/json");
         response.getWriter().println(gson);
     }
