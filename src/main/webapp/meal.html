@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Meal page</title>
     <link rel="stylesheet" href="meal-page-style.css"></link>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0FR7vWT5PKPh-Sq95zAjcWXBFXRYl5xI"></script>
     <script src="meal-page-script.js"></script>
   </head>
   <body onload="fetchMealInfo()">
-    <h1>Meal page</h1>
-    <h2 id="title"></h2>
-    <p id="description"></p>
-    <h2>Ingredients:</h2>
-    <ul id="ingredients"></ul>
-    <h2>Explore on a map:</h2>
-    <div id="map"></div>
-    <br>
-    <button onclick="redirectToSimilar()">Show similar meal!</button>
+    <div>
+      <h1 id="title">Best meal ever</h1>
+      <p id="description"></p>
+      <h2>Ingredients:</h2>
+      <ul id="ingredients"></ul>
+      <h2>Explore on a map:</h2>
+      <div id="map"></div>
+      <br />
+      <button onclick="redirectToSimilar()">Show similar meal!</button>
+    </div>
   </body>
 </html>

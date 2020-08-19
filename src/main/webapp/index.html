@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Meal Assistant</title>
+    <link rel="stylesheet" href="search-meal-style.css"></link>
     <script src="search-meal-script.js"></script>
   </head>
   <body onload="searchMeal()">
-    <h1>Meal Assistant</h1>
-    <p>Test message</p>
-    <form>
-        <input type="text" id="text" name="text" placeholder="Search..">
-        <input type='submit' >
-    </form>
-    <div id="dishes-container"></div>
+    <div>
+      <form>
+        <input type="text" id="text" name="text" placeholder="Search.." />
+        <input type="submit" />
+      </form>
+    </div>
+    <div>
+      <ul id="dishes-container"></ul>
+    </div>
   </body>
 </html>
