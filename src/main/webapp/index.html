@@ -7,13 +7,12 @@
     <script src="search-meal-script.js"></script>
   </head>
   <body onload="searchMeal()">
-    <div>
+    <div id="search-block">
       <form>
+        <label for="text">Meal Assistant</label>
         <input type="text" id="text" name="text" placeholder="Search.." />
         <input type="submit" />
       </form>
-    </div>
-    <div>
       <ul id="dishes-container"></ul>
     </div>
   </body>
