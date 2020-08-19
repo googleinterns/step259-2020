@@ -55,7 +55,14 @@ function createElementByTag(text, tag) {
   return element;
 }
 
+function redirectToSimilar() {
+    fetch('/meal/similar').then(response => response.json()).then((id) => {
+        const url = `/meal.html?id=${id.toString()}`;
+        window.location.replace(url);
+    });
+}
 
+/** Creates a map and adds it to the page. */
 function createMap() {
   const userLocation = new google.maps.LatLng(55.746514, 37.627022);
   const mapOptions = {
