@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -60,9 +61,16 @@ public class MealServlet extends HttpServlet {
             return;
         }
 
-        // GET meal/meal_id
+        
         if (pathInfo.split("/").length == 2) {
-            getMealById(request, response);
+            String idString = pathInfo.replaceAll("/", "");
+            if (idString.equals("similar")) {
+                // GET meal/similar
+                returnUrlToSimilar(request, response);
+            } else { 
+                // GET meal/<meal_id>
+                getMealById(request, response);
+            }
             return;
         }
 
@@ -109,6 +117,18 @@ public class MealServlet extends HttpServlet {
 
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
         return;
+    }
+
+     private void returnUrlToSimilar(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Fuction redirect to random page
+        // TODO(grenlayk): implement suggestions algorithm here for Product Alpha
+        Random rand = new Random(); 
+        int randomId = rand.nextInt(dishes.size()); 
+        String url = "/meal.html" + "?id=" + Integer.toString(randomId);
+        
+        String gson = new Gson().toJson(url);
+        response.setContentType("application/json");
+        response.getWriter().println(gson);
     }
 
 

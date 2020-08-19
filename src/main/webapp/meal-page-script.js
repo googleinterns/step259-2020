@@ -13,7 +13,7 @@
 // limitations under the License.
 
 function fetchMealInfo() {
-    fetch('/meal').then(response => response.json()).then((meal) => 
+    fetch('/meal/0').then(response => response.json()).then((meal) => 
     {
         const { title, description, ingredients } = meal;
         const titleElement = document.getElementById("title");
@@ -40,7 +40,9 @@ function createElementByTag(text, tag) {
 }
 
 function redirectToSimilar() {
-    fetch('/meal/similar');
+    fetch('/meal/similar').then(response => response.json()).then((url) => {
+        window.location.replace(url);
+    });
 }
 
 /** Creates a map and adds it to the page. */
