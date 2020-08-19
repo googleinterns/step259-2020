@@ -13,25 +13,30 @@
 // limitations under the License.
 
 function fetchMealInfo() {
-    fetch('/meal').then(response => response.json()).then((meal) => 
-    {
-        const { title, description, ingredients } = meal;
-        const titleElement = document.getElementById("title");
-        titleElement.innerText = encodingCheck(title);
-        const descriptionElement = document.getElementById("description");
-        descriptionElement.innerText = encodingCheck(description);
-        const ingredientsElement = document.getElementById("ingredients");
-        for (const ingredient of ingredients) {
-            ingredientsElement.appendChild(createElementByTag(encodingCheck(ingredient), 'li'));
-        }
-        createMap();
+  fetch("/meal/0")
+    .then((response) => response.json())
+    .then((meal) => {
+      const { title, description, ingredients } = meal;
+      const titleElement = document.getElementById("title");
+      titleElement.innerText = encodingCheck(title);
+      const descriptionElement = document.getElementById("description");
+      descriptionElement.innerText = encodingCheck(description);
+      const ingredientsElement = document.getElementById("ingredients");
+      for (const ingredient of ingredients) {
+        ingredientsElement.appendChild(
+          createElementByTag(encodingCheck(ingredient), "li")
+        );
+      }
+      createMap();
     });
 }
 
+
 // solution from https://stackoverflow.com/questions/20174280/nodejs-convert-string-into-utf-8
 function encodingCheck(string) {
-    return JSON.parse(JSON.stringify(string));
+  return JSON.parse(JSON.stringify(string));
 }
+
 
 function createElementByTag(text, tag) {
   const element = document.createElement(tag);
@@ -39,21 +44,94 @@ function createElementByTag(text, tag) {
   return element;
 }
 
-/** Creates a map and adds it to the page. */
+
 function createMap() {
   const userLocation = new google.maps.LatLng(55.746514, 37.627022);
   const mapOptions = {
-    zoom: 16,
-    center: userLocation
+    zoom: 14,
+    center: userLocation,
   };
   const map = new google.maps.Map(document.getElementById("map"), mapOptions);
-  // TODO(grenlayk): implement real geolocation here
-  // TODO(grenlayk): change "You are here" marker on custom one
   const locationMarker = new google.maps.Marker({
     position: userLocation,
     map,
-    title: "You are here",
+    title: "You are here (probably)",
+    label: "U",
     animation: google.maps.Animation.DROP,
   });
+
+  getCurrentPositionPromise()
+  .then(position => {
+    const location = new google.maps.LatLng(
+        position.coords.latitude,
+        position.coords.longitude
+    );
+    map.setCenter(location);
+    locationMarker.setPosition(location);
+  })
+  .catch(err => {
+    if (err === "NO_GEOLOCATION") {
+      handleBrowserError();
+    } else if (err === "GET_POSITION_FAILED") {
+      handleConsentError();
+    }
+  })
+  .then(() => {
+    addRestaurants(map);
+  });
+}
+
+
+function getCurrentPositionPromise() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject("NO_GEOLOCATION");  
+    } else {
+      const onSuccess = (position) => resolve(position);  
+      const onError = () => reject("GET_POSITION_FAILED");
+      navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    }
+  });
+}
+
+
+function addRestaurants(map) {
+  // Hard coded restaurants
+  const restaurants = [
+    moveLocationBy(map.getCenter(), 0.001, 0.001), 
+    moveLocationBy(map.getCenter(), -0.001, 0.001)
+  ];
+
   // TODO(grenlayk): implement restaurants search here
+  for (const restaurantLocation of restaurants) {
+    const marker = new google.maps.Marker({
+        position: restaurantLocation,
+        map,
+        title: "Restaurant",
+        animation: google.maps.Animation.DROP
+    });
+  }
+}
+
+
+function moveLocationBy(location, latDiff, lngDiff) {
+    const lat = location.lat() + latDiff;
+    const lng = location.lng() + lngDiff;
+    return {
+        lat, 
+        lng
+    };
+}
+
+
+function handleConsentError() {
+  alert(
+    "Error: The Geolocation service failed.\n \
+     Share your location, please."
+  );
+}
+
+
+function handleBrowserError() {
+  alert("Error: Your browser doesn't support geolocation.");
 }
