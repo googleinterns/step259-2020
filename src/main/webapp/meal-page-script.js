@@ -37,6 +37,7 @@ function fetchMealInfo() {
         }
         createMap();
     }).catch((error) => {
+        //TODO(sandatsian): display error page
         console.log(error);
     });
 }
