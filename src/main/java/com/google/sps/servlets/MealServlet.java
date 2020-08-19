@@ -66,7 +66,7 @@ public class MealServlet extends HttpServlet {
             String idString = pathInfo.replaceAll("/", "");
             if (idString.equals("similar")) {
                 // GET meal/similar
-                returnUrlToSimilar(request, response);
+                returnIdOfSimilar(request, response);
             } else { 
                 // GET meal/<meal_id>
                 getMealById(request, response);
@@ -119,14 +119,13 @@ public class MealServlet extends HttpServlet {
         return;
     }
 
-     private void returnUrlToSimilar(HttpServletRequest request, HttpServletResponse response) throws IOException {
+     private void returnIdOfSimilar(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Fuction redirect to random page
         // TODO(grenlayk): implement suggestions algorithm here for Product Alpha
         Random rand = new Random(); 
         int randomId = rand.nextInt(dishes.size()); 
-        String url = "/meal.html" + "?id=" + Integer.toString(randomId);
         
-        String gson = new Gson().toJson(url);
+        String gson = new Gson().toJson(randomId);
         response.setContentType("application/json");
         response.getWriter().println(gson);
     }
