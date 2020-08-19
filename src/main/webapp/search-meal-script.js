@@ -24,12 +24,12 @@ function searchMeal() {
     });
 }
 
-function createListElement(obj) {
+function createListElement(dish) {
     const listElement = document.createElement('li');
-    const id = obj.id;
-    listElement.innerText = obj.title;
+    const id = dish.id;
+    listElement.innerText = dish.title;
     listElement.onclick = function() {
-        location.href = 'meal.html?id=' + id.toString();
+        location.href = `meal.html?id=${id}`;
     };
     return listElement;
 }

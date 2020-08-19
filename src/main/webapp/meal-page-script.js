@@ -17,9 +17,14 @@ function fetchMealInfo() {
     // fetches form server by action meal/<id>
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const id = urlParams.get("id");
+    const id = urlParams.get("id") ?? 0;
 
-    fetch('/meal/' + id.toString()).then(response => response.json()).then((meal) => 
+    fetch('/meal/' + id.toString()).then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }).then((meal) => 
     {
         const { title, description, ingredients } = meal;
         const titleElement = document.getElementById("title");
@@ -31,6 +36,8 @@ function fetchMealInfo() {
             ingredientsElement.appendChild(createElementByTag(encodingCheck(ingredient), 'li'));
         }
         createMap();
+    }).catch((error) => {
+        console.log(error);
     });
 }
 
