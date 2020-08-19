@@ -39,6 +39,10 @@ function createElementByTag(text, tag) {
   return element;
 }
 
+function redirectToSimilar() {
+    fetch('/meal/similar');
+}
+
 /** Creates a map and adds it to the page. */
 function createMap() {
   const userLocation = new google.maps.LatLng(55.746514, 37.627022);
