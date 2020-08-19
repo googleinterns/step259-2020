@@ -31,10 +31,12 @@ function fetchMealInfo() {
     });
 }
 
+
 // solution from https://stackoverflow.com/questions/20174280/nodejs-convert-string-into-utf-8
 function encodingCheck(string) {
   return JSON.parse(JSON.stringify(string));
 }
+
 
 function createElementByTag(text, tag) {
   const element = document.createElement(tag);
@@ -42,15 +44,14 @@ function createElementByTag(text, tag) {
   return element;
 }
 
-let map;
 
 function createMap() {
-  let userLocation = new google.maps.LatLng(55.746514, 37.627022);
+  const userLocation = new google.maps.LatLng(55.746514, 37.627022);
   const mapOptions = {
     zoom: 14,
     center: userLocation,
   };
-  map = new google.maps.Map(document.getElementById("map"), mapOptions);
+  const map = new google.maps.Map(document.getElementById("map"), mapOptions);
   const locationMarker = new google.maps.Marker({
     position: userLocation,
     map,
@@ -59,34 +60,47 @@ function createMap() {
     animation: google.maps.Animation.DROP,
   });
 
-  
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function (position) {
-        const location = new google.maps.LatLng(
-          position.coords.latitude,
-          position.coords.longitude
-        );
-        map.setCenter(location);
-        locationMarker.setPosition(location);
-        addRestaurants();
-      },
-      function () {
-        handleLocationError(true);
-        addRestaurants();
-      }
-    )
-  } else {
-    handleLocationError(false);
-    addRestaurants();
-  }
+  getCurrentPositionPromise()
+  .then(position => {
+    const location = new google.maps.LatLng(
+        position.coords.latitude,
+        position.coords.longitude
+    );
+    map.setCenter(location);
+    locationMarker.setPosition(location);
+  })
+  .catch(err => {
+    if (err === "NO_GEOLOCATION") {
+      handleBrowserError();
+    } else if (err === "GET_POSITION_FAILED") {
+      handleConsentError();
+    }
+  })
+  .then(() => {
+    addRestaurants(map);
+  });
 }
 
-function addRestaurants() {
+
+function getCurrentPositionPromise() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject("NO_GEOLOCATION");  
+    } else {
+      const onSuccess = (position) => resolve(position);  
+      const onError = () => reject("GET_POSITION_FAILED");
+      navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    }
+  });
+}
+
+
+function addRestaurants(map) {
   // Hard coded restaurants
-  const restaurants = [];
-  restaurants.push(changeLocation(map.getCenter(), 0.001, 0.001));
-  restaurants.push(changeLocation(map.getCenter(), -0.001, 0.001));
+  const restaurants = [
+    moveLocationBy(map.getCenter(), 0.001, 0.001), 
+    moveLocationBy(map.getCenter(), -0.001, 0.001)
+  ];
 
   // TODO(grenlayk): implement restaurants search here
   for (const restaurantLocation of restaurants) {
@@ -99,7 +113,8 @@ function addRestaurants() {
   }
 }
 
-function changeLocation(location, latDiff, lngDiff) {
+
+function moveLocationBy(location, latDiff, lngDiff) {
     const lat = location.lat() + latDiff;
     const lng = location.lng() + lngDiff;
     return {
@@ -108,13 +123,15 @@ function changeLocation(location, latDiff, lngDiff) {
     };
 }
 
-function handleLocationError(browserHasGeolocation) {
-  if (browserHasGeolocation) {
-    alert(
-      "Error: The Geolocation service failed.\n \
-               Share your location, please."
-    );
-  } else {
-    alert("Error: Your browser doesn't support geolocation.");
-  }
+
+function handleConsentError() {
+  alert(
+    "Error: The Geolocation service failed.\n \
+     Share your location, please."
+  );
+}
+
+
+function handleBrowserError() {
+  alert("Error: Your browser doesn't support geolocation.");
 }
