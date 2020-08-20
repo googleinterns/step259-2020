@@ -12,47 +12,42 @@
  See the License for the specific language governing permissions and
  limitations under the License. */
 
-body {
-  background-image: url("image/background-main.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: right top;
-  background-attachment: fixed;
-  font-family: sans-serif;
+form {
+    font-size: 30px;
+    color: rgb(100, 100, 100);
+    text-align: center;
 }
 
-input[type=text], select {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid;
-  border-radius: 4px;
-  box-sizing: border-box;
+div {
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
-input[type=submit] {
+ul {
+  list-style-type: none;
+  width: 300px;
+  padding: 0;
+  border: 1px solid rgb(199, 199, 199);
+}
+
+ul li {
+  padding: 8px 16px;
+  border-bottom: 1px solid rgb(199, 199, 199);
+}
+
+ul li:last-child {
+  border-bottom: none
+}
+
+button {
   width: 100%;
   background-color: rgb(136, 235, 140);
   color: white;
-  padding: 14px 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  height: 40px;
   margin: 8px 0;
   border: none;
   border-radius: 4px;
 }
 
-#search-block {
-  width: 300px;
-  position: relative;
-  top: 50%; 
-  margin: auto;
-  border-radius: 15px;
-  background-color: #ffffff;
-  padding: 20px;   
-}
-
-a.source {
-    color: rgb(109, 109, 109);
-    position: absolute;
-    bottom: 0;
-}

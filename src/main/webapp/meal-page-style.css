@@ -22,50 +22,20 @@ body {
   background-image: url("image/background-meal.jpg");
   background-repeat: no-repeat;
   background-position: right top;
-  background-size: 100%;
+  background-size: cover;;
   margin-right: 400px;
   background-attachment: fixed;
   font-family: sans-serif;
+}
+
+#content {
+  background-color: rgba(255, 255, 255, 0.5);
   font-size: 20px;
   color: black;
 }
 
-#content {
-    background-color: rgba(255, 255, 255, 0.5);
+a.source {
+    color: rgb(109, 109, 109);
+    position: relative;
+    bottom: 0;
 }
-
-div {
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-ul {
-  list-style-type: none;
-  width: 200px;
-  padding: 0;
-  border: 1px solid rgb(199, 199, 199);
-}
-
-ul li {
-  padding: 8px 16px;
-  border-bottom: 1px solid rgb(199, 199, 199);
-}
-
-ul li:last-child {
-  border-bottom: none
-}
-
-button {
-  width: 100%;
-  background-color: rgb(136, 235, 140);
-  color: white;
-  padding-left: 30px;
-  padding-right: 30px;
-  height: 40px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-}
-
-
-
