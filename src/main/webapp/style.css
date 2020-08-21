@@ -12,6 +12,14 @@
  See the License for the specific language governing permissions and
  limitations under the License. */
 
+body {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: right top;
+  background-attachment: fixed;
+  font-family: sans-serif;
+}
+
 form {
     font-size: 30px;
     color: rgb(100, 100, 100);
@@ -49,5 +57,10 @@ button {
   margin: 8px 0;
   border: none;
   border-radius: 4px;
+}
+
+p.source {
+    color: rgb(109, 109, 109);
+    bottom: 0;
 }
 

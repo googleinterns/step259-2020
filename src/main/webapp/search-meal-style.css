@@ -14,11 +14,6 @@
 
 body {
   background-image: url("image/background-main.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: right top;
-  background-attachment: fixed;
-  font-family: sans-serif;
 }
 
 input[type=text], select {
@@ -51,8 +46,6 @@ input[type=submit] {
   padding: 20px;   
 }
 
-a.source {
-    color: rgb(109, 109, 109);
+p.source {
     position: absolute;
-    bottom: 0;
 }

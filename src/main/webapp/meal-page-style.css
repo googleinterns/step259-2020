@@ -12,30 +12,23 @@
  See the License for the specific language governing permissions and
  limitations under the License. */
 
+body {
+  background-image: url("image/background-meal.jpg");
+  margin-right: 400px;
+}
+
 #map {
   border: thin solid black;
   height: 500px;
   width: 80%;
 }
 
-body {
-  background-image: url("image/background-meal.jpg");
-  background-repeat: no-repeat;
-  background-position: right top;
-  background-size: cover;;
-  margin-right: 400px;
-  background-attachment: fixed;
-  font-family: sans-serif;
-}
-
 #content {
   background-color: rgba(255, 255, 255, 0.5);
   font-size: 20px;
-  color: black;
+  color: rgb(100, 100, 100);
 }
 
-a.source {
-    color: rgb(109, 109, 109);
+p.source {
     position: relative;
-    bottom: 0;
 }
