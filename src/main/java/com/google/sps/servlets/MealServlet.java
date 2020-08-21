@@ -14,11 +14,22 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -33,21 +44,47 @@ import com.google.sps.data.Meal;
 @WebServlet("/meal/*")
 public class MealServlet extends HttpServlet {
 
-    private final HashMap<Long, Meal> dishes = new HashMap<Long, Meal> ();
-
     @Override
     public void init() {
         // TODO(sandatsian): implement uploading of dataset from website here
-        dishes.put(0L, new Meal(0L, "Fried potato", "Fried potato with mushrooms and onion.",
-            new ArrayList<>(Arrays.asList("Potato", "Onion", "Mushrooms", "Oil")), "main"));
-        dishes.put(1L, new Meal(1L, "Italian pizza", "Pizza with pineaple, sausage and tomato.",
-            new ArrayList<>(Arrays.asList("Flour", "Water", "Sausage", "Tomato", "Pineaple", "Cheese")), "pizza"));
-        dishes.put(2L, new Meal(2L, "Vegetable soup", "Vegetable soup with onion.",
-            new ArrayList<>(Arrays.asList("Potato", "Onion", "Cabbage", "Mushrooms", "Water", "Carrot", "Pumpkin")), "soup"));
-        dishes.put(3L, new Meal(3L, "Chocolate cake", "Chocolate cake with butter cream and strawberry.",
-            new ArrayList<>(Arrays.asList("Flour", "Water", "Butter", "Cacao", "Chocolate", "Sugar", "Strawberry", "Eggs")), "dessert"));
-        dishes.put(4L, new Meal(4L, "Hot chocolate", "Hot chocolate with sugar and caramel.",
-            new ArrayList<>(Arrays.asList("Cacao", "Sugar", "Milk", "Caramel", "Vanil")), "drinks"));
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService(); 
+        // add hard coded meals
+        // 0...4
+        datastore.put(createMealEntity(
+            new Meal(0L, "Fried potato", "Fried potato with mushrooms and onion.",
+                new ArrayList<>(Arrays.asList("potato", "onion", "mushrooms", "oil")), "Main")));
+        datastore.put(createMealEntity(
+            new Meal(1L, "Italian pizza", "Pizza with pineaple, sausage and tomato.",
+                new ArrayList<>(Arrays.asList("flour", "water", "sausage", "tomato", "pineaple", "cheese")), "Pizza")));
+        datastore.put(createMealEntity(
+            new Meal(2L, "Vegetable soup", "Vegetable soup with onion.",
+                new ArrayList<>(Arrays.asList("potato", "onion", "cabbage", "mushrooms", "water", "carrot", "pumpkin")), "Soup")));
+        datastore.put(createMealEntity(
+            new Meal(3L, "Chocolate cake", "Chocolate cake with butter cream and strawberry.",
+                new ArrayList<>(Arrays.asList("flour", "water", "butter", "cocoa powder", "chocolate", "sugar", "strawberry", "eggs")), "Dessert")));
+        datastore.put(createMealEntity(
+            new Meal(4L, "Hot chocolate", "Hot chocolate with sugar and caramel.",
+                new ArrayList<>(Arrays.asList("cocoa powder", "sugar", "milk", "caramel", "vanilla")), "Drinks")));
+        // 5...9
+        datastore.put(createMealEntity(
+            new Meal(5L, "Cheese Omelette", "This tasty omelette is full of cheese.",
+                new ArrayList<>(Arrays.asList("2 eggs", "salt", "butter", "Cheddar cheese", "Mozarella cheese")), "omelette")));
+        datastore.put(createMealEntity(
+            new Meal(6L, "Garlic, Tomato and Cheddar Sandwich", "A delicious sandwich for breakfast and fast food!",
+                new ArrayList<>(Arrays.asList("2 slices brown bread", "clove garlic", "tomato", "Cheddar cheese", "green chili",
+                "olive oil", "salt", "pepper")), "Main")));
+        datastore.put(createMealEntity(
+            new Meal(7L, "Chocolate Chips Pancake", "So delicious and chocolate breakfast.",
+                new ArrayList<>(Arrays.asList("2 eggs", "salt", "butter", "flour", "sugar", "chocolate chips", "milk")), "Pancake")));
+        datastore.put(createMealEntity(
+            new Meal(8L, "Seafood Pizza", "Just from the bottom of the ocean...",
+                new ArrayList<>(Arrays.asList("flour", "salt", "butter", "water", "oil", "shrimp", "tuna", "onion", "ctabstick",
+                "scallops", "fish sticks", "garlic", "tomato sauce")), "Pizza")));
+        datastore.put(createMealEntity(
+            new Meal(9L, "Almond Fudge Brownies", "There is any almond lover's prime recipe for fudge brownies.",
+                new ArrayList<>(Arrays.asList("2 eggs", "sugar", "butter", "milk", "almond", "vanilla", "cocoa powder")), "Dessert")));
+        // TODO: create 5 new ones
+        // 10...14
     }
 
     @Override
@@ -57,16 +94,17 @@ public class MealServlet extends HttpServlet {
         // Get meal
         // GET meal/
         if (pathInfo == null || pathInfo.equals("/")) {
-            searchMeal(request, response);
+            getMealList(request, response);
             return;
         }
 
-        
         if (pathInfo.split("/").length == 2) {
             String idString = pathInfo.replaceAll("/", "");
             if (idString.equals("similar")) {
                 // GET meal/similar
                 returnIdOfSimilar(request, response);
+            } else if (idString.contains("search")) {
+                // GET meal/search
             } else { 
                 // GET meal/<meal_id>
                 getMealById(request, response);
@@ -85,13 +123,36 @@ public class MealServlet extends HttpServlet {
         return;
     }
 
+    private Entity createMealEntity(Meal meal) {
+        Entity mealEntity = new Entity("Meal");
+        mealEntity.setProperty("id", meal.getId());
+        mealEntity.setProperty("title", meal.getTitle());
+        mealEntity.setProperty("description", meal.getDescription());
+        mealEntity.setProperty("ingredients", meal.getIngredients());
+        mealEntity.setProperty("type", meal.getType());
+ 
+        return mealEntity;
+    }
+
+    private void getMealList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Query query = new Query("Meal").addSort("id", SortDirection.DESCENDING);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        PreparedQuery results = datastore.prepare(query);
+
+        List<Meal> meals = getDataFromDatastore(results);
+        Gson gson = new Gson();
+        response.setContentType("application/json;");
+        response.getWriter().println(gson.toJson(meals));
+        return;
+    }
+
     private void searchMeal(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Fuction returns hardcoded result
         // TODO(sandatsian): implement search algorithm here for MVP
-        String gson = new Gson().toJson(dishes);
+        /*String gson = new Gson().toJson(dishes);
         response.setContentType("application/json");
         response.getWriter().println(gson);
-        return;
+        return;*/
     }
 
     private void getMealById(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -105,9 +166,12 @@ public class MealServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-
-        Meal meal = dishes.get(id);
-
+        Filter propertyFilter = new FilterPredicate("id", FilterOperator.EQUAL, id);
+        Query query = new Query("Meal").setFilter(propertyFilter);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        PreparedQuery results = datastore.prepare(query);
+        ArrayList<Meal> meals = getDataFromDatastore(results); 
+        Meal meal = meals.get(0);
         if (meal != null) {
             String gson = new Gson().toJson(meal);
             response.setContentType("application/json");
@@ -119,15 +183,30 @@ public class MealServlet extends HttpServlet {
         return;
     }
 
-     private void returnIdOfSimilar(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private ArrayList<Meal> getDataFromDatastore(PreparedQuery query) {
+        ArrayList<Meal> result = new ArrayList<>();
+        for (Entity entity : query.asIterable()) {
+            Long id = (Long)entity.getProperty("id");
+            String title = (String) entity.getProperty("title");
+            String description = (String) entity.getProperty("description");
+            ArrayList<String> ingredients = (ArrayList<String>) entity.getProperty("ingredients");
+            String type = (String) entity.getProperty("type");
+
+            Meal meal = new Meal(id, title, description, ingredients, type);
+            result.add(meal);
+        }
+        return result;
+    }
+
+    private void returnIdOfSimilar(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Fuction redirect to random page
         // TODO(grenlayk): implement suggestions algorithm here for Product Alpha
-        Random rand = new Random(); 
+        /*Random rand = new Random(); 
         int randomId = rand.nextInt(dishes.size()); 
         
         String gson = new Gson().toJson(randomId);
         response.setContentType("application/json");
-        response.getWriter().println(gson);
+        response.getWriter().println(gson);*/
     }
 
 
