@@ -38,16 +38,16 @@ public class MealServlet extends HttpServlet {
     @Override
     public void init() {
         // TODO(sandatsian): implement uploading of dataset from website here
-        dishes.put(0L, new Meal(0L, "fried potato", "fried potato with mushrooms and onion",
-            new ArrayList<>(Arrays.asList("potato", "onion", "mushrooms", "oil")), "Main"));
-        dishes.put(1L, new Meal(1L, "Italian pizza", "Pizza with pineaple, sausage and tomato",
-            new ArrayList<>(Arrays.asList("flour", "water", "sausage", "tomato", "pineaple", "cheese")), "pizza"));
-        dishes.put(2L, new Meal(2L, "vegetable soup", "vegetable soup with onion",
-            new ArrayList<>(Arrays.asList("potato", "onion", "cabbage", "mushrooms", "water", "carrot", "pumpkin")), "soup"));
-        dishes.put(3L, new Meal(3L, "chocolate cake", "chocolate cake with butter cream and strawberry",
-            new ArrayList<>(Arrays.asList("flour", "water", "butter", "cacao", "chocolate", "sugar", "strawberry", "eggs")), "dessert"));
-        dishes.put(4L, new Meal(4L, "hot chocolate", "hot chocolate with sugar and caramel",
-            new ArrayList<>(Arrays.asList("cacao", "sugar", "milk", "caramel", "vanil")), "drinks"));
+        dishes.put(0L, new Meal(0L, "Fried potato", "Fried potato with mushrooms and onion.",
+            new ArrayList<>(Arrays.asList("Potato", "Onion", "Mushrooms", "Oil")), "main"));
+        dishes.put(1L, new Meal(1L, "Italian pizza", "Pizza with pineaple, sausage and tomato.",
+            new ArrayList<>(Arrays.asList("Flour", "Water", "Sausage", "Tomato", "Pineaple", "Cheese")), "pizza"));
+        dishes.put(2L, new Meal(2L, "Vegetable soup", "Vegetable soup with onion.",
+            new ArrayList<>(Arrays.asList("Potato", "Onion", "Cabbage", "Mushrooms", "Water", "Carrot", "Pumpkin")), "soup"));
+        dishes.put(3L, new Meal(3L, "Chocolate cake", "Chocolate cake with butter cream and strawberry.",
+            new ArrayList<>(Arrays.asList("Flour", "Water", "Butter", "Cacao", "Chocolate", "Sugar", "Strawberry", "Eggs")), "dessert"));
+        dishes.put(4L, new Meal(4L, "Hot chocolate", "Hot chocolate with sugar and caramel.",
+            new ArrayList<>(Arrays.asList("Cacao", "Sugar", "Milk", "Caramel", "Vanil")), "drinks"));
     }
 
     @Override
