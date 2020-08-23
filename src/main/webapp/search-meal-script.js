@@ -12,7 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function searchMeal() {
+
+import Vue from 'vue';
+
+const search = new Vue({
+  el: '#search-bar',
+  data: {
+    request: "",
+  },
+  methods: {
+      submit: function() {
+        window.location.replace("/search_results.html");
+        searchMeal(this.request);
+      }
+  }
+})
+
+function searchMeal(request) {
     fetch('/meal').then(response => response.json()).then((dishes) => 
     {
         const container = document.getElementById("dishes-container");

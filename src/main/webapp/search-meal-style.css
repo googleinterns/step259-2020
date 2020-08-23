@@ -12,40 +12,57 @@
  See the License for the specific language governing permissions and
  limitations under the License. */
 
-body {
-  background-image: url("image/background-main.jpg");
+ body {
+  background-image: url("image/background-main.jpg"); 
 }
 
-input[type=text], select {
-  width: 100%;
+#search-bar input {
+  width: 80%;
   padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid;
-  border-radius: 4px;
   box-sizing: border-box;
+  border: 1px solid black;
+  border-radius: 20px;
+  margin: 0 auto;
+  display: block;
 }
 
-input[type=submit] {
-  width: 100%;
-  background-color: rgb(136, 235, 140);
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
+#search-title {
+    font-size: 40px;
+    color: black;
+    text-align: center;
+    display: block;
 }
 
 #search-block {
-  width: 300px;
-  position: relative;
-  top: 50%; 
-  margin: auto;
-  border-radius: 15px;
-  background-color: #ffffff;
+  width: 600px;
   padding: 20px;   
+  margin: 0;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+} 
+
+#content {
+  background-color: rgba(255, 255, 255, 0.5);
+  color: rgb(100, 100, 100);
+  position: relative;
+  margin: 0 auto;
+  width: 90vw;
+  height: 98vh;
 }
 
-p.source {
-    position: absolute;
+#source {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+}
+
+#source a {
+    text-decoration: none;
+    color: rgb(100, 100, 100);
 }
