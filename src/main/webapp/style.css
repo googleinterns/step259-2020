@@ -36,8 +36,32 @@ ul li:last-child {
   border-bottom: none
 }
 
-p.source {
-    color: rgb(109, 109, 109);
-    bottom: 0;
+/* Add a black background color to the top navigation */
+.topnav {
+  background-color: #00CF91;
+  overflow: hidden;
+  font-size: 22px;
+  display: block;
 }
 
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: black;
+  text-align: center;
+  padding: 15px 26px;
+  text-decoration: none;
+  font-size: 22px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  color: #EDF5EF;
+  text-decoration: none;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  color:#EDF5EF;
+  text-decoration: none;
+}

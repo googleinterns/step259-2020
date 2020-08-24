@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-import Vue from 'vue';
-
 const search = new Vue({
   el: '#search-bar',
   data: {
@@ -22,13 +19,13 @@ const search = new Vue({
   },
   methods: {
       submit: function() {
-        window.location.replace("/search_results.html");
-        searchMeal(this.request);
+        window.location.replace("/search-results.html");
+        searchMeal();
       }
   }
-})
+});
 
-function searchMeal(request) {
+function searchMeal() {
     fetch('/meal').then(response => response.json()).then((dishes) => 
     {
         const container = document.getElementById("dishes-container");
@@ -49,4 +46,3 @@ function createListElement(dish) {
     };
     return listElement;
 }
-

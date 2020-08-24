@@ -8,19 +8,17 @@
     <script type="module" src="search-meal-script.js"></script>
     <script src="https://unpkg.com/vue"></script>
   </head>  
-  <body>
+  <body onload="searchMeal()">
     <nav class="topnav">
         <a href="/index.html"> Meal Assistant</a>
     </nav>
+    <div id="dishes-container">
+    </div>
+    
     <div id="content">
-        <div id="search-block">
-            <div id="search-title">
-                Meal Assistant
-            </div>
-            <br>
-            <div id="search-bar"> 
-                <input v-on:keyup.enter="submit" v-model="request" type="text" id="text" name="text" placeholder="Search..." />
-            </div>
+        <br>
+        <div id="search-bar"> 
+            <input v-on:keyup.enter="submit" v-model="request" type="text" id="text" name="text" placeholder="Search..."/>
         </div>
 
         <div id="source">
