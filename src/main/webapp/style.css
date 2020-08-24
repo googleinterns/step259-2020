@@ -20,7 +20,7 @@ body {
   font-family: Georgia, serif;
 }
 
-ul {
+/* ul {
   list-style-type: none;
   width: 300px;
   padding: 0;
@@ -34,7 +34,7 @@ ul li {
 
 ul li:last-child {
   border-bottom: none
-}
+} */
 
 /* Add a black background color to the top navigation */
 .topnav {
@@ -51,7 +51,7 @@ ul li:last-child {
   text-align: center;
   padding: 15px 26px;
   text-decoration: none;
-  font-size: 22px;
+  font-size: 26px;
 }
 
 /* Change the color of links on hover */

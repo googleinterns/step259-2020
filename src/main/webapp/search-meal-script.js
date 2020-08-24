@@ -12,18 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const search = new Vue({
-  el: '#search-bar',
-  data: {
-    request: "",
-  },
-  methods: {
-      submit: function() {
-        window.location.replace("/search-results.html");
-        searchMeal();
-      }
-  }
-});
 
 function searchMeal() {
     fetch('/meal').then(response => response.json()).then((dishes) => 
@@ -32,17 +20,31 @@ function searchMeal() {
         container.innerText = "";
         dishes = dishes ?? {0: ""};
         Object.entries(dishes).forEach((dish) => {
-            container.appendChild(createListElement(dish[1]));
-        });
+            container.appendChild(createMealBlock(dish[1]));
+        }); 
     });
 }
 
-function createListElement(dish) {
-    const listElement = document.createElement('li');
-    const id = dish.id;
-    listElement.innerText = dish.title;
-    listElement.onclick = function() {
-        location.href = `meal.html?id=${id}`;
-    };
-    return listElement;
+function createMealBlock(dish) {
+    const blockElement = document.createElement('div');
+    blockElement.setAttribute('id', 'meal-block');
+    blockElement.appendChild(createMealElement(dish));
+    return blockElement;
+}
+
+function createMealElement(dish) {
+    const { id, title, description } = dish;
+    const aElement = document.createElement("a");
+    aElement.setAttribute('href', `meal.html?id=${id}`);
+    const insideDivElement = document.createElement("div");
+    insideDivElement.appendChild(createElementByTag(title, 'b'));
+    insideDivElement.appendChild(createElementByTag(description, 'p'));
+    aElement.appendChild(insideDivElement);
+    return aElement;
+}
+
+function createElementByTag(text, tag) {
+  const element = document.createElement(tag);
+  element.innerText = text;
+  return element;
 }

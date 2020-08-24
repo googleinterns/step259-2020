@@ -73,4 +73,19 @@ body {
     color: rgb(100, 100, 100);
 }
 
+#meal-block {
+    width: 70%;
+    font-size: 20px;
+    margin: 4px auto;
+    border: 1px solid black;
+    padding: 10px 20px;
+    color:black;
+    border-radius: 5px;
+}
+
+#meal-block a, a:hover, a:after {
+    text-decoration: none;
+    color: black;
+}
+
 
