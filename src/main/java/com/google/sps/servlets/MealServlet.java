@@ -44,14 +44,7 @@ import com.google.sps.data.Meal;
 @WebServlet("/meal/*")
 public class MealServlet extends HttpServlet {
 
-// TODO(sandatsian): implement uploading of dataset from website here
-    /*@Override
-    public void init() {
-        
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService(); 
-        // add hard coded meals
-    }*/
-
+    // TODO(sandatsian): implement uploading of dataset from website
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo();
