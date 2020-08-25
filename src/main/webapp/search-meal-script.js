@@ -25,12 +25,14 @@ function searchMeal() {
     });
 }
 
+
 function createMealBlock(dish) {
     const blockElement = document.createElement('div');
     blockElement.setAttribute('id', 'meal-block');
     blockElement.appendChild(createMealElement(dish));
     return blockElement;
 }
+
 
 function createMealElement(dish) {
     const { id, title, description } = dish;
@@ -41,10 +43,4 @@ function createMealElement(dish) {
     insideDivElement.appendChild(createElementByTag(description, 'p'));
     aElement.appendChild(insideDivElement);
     return aElement;
-}
-
-function createElementByTag(text, tag) {
-  const element = document.createElement(tag);
-  element.innerText = text;
-  return element;
 }

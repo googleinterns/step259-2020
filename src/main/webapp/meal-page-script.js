@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 function fetchMealInfo() {
     // use mapping /meal.html?id=<id> 
     // fetches form server by action meal/<id>
@@ -49,18 +50,13 @@ function encodingCheck(string) {
 }
 
 
-function createElementByTag(text, tag) {
-  const element = document.createElement(tag);
-  element.innerText = text;
-  return element;
-}
-
 function redirectToSimilar() {
     fetch('/meal/similar').then(response => response.json()).then((id) => {
         const url = `/meal.html?id=${id.toString()}`;
         window.location.replace(url);
     });
 }
+
 
 /** Creates a map and adds it to the page. */
 function createMap() {

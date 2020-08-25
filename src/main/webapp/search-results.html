@@ -8,15 +8,15 @@
     <script src="https://unpkg.com/vue"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
     <script src="search-meal-script.js"></script>
+    <script src="script.js"></script>
     <script type="module" src="main.js"></script>
   </head>  
   <body onload="searchMeal()">
     <nav class="topnav">
-        <a href="/index.html"> Meal Assistant</a>
+        <b> <a href="/index.html"> Meal Assistant</a> </b>
     </nav>
-    
 
-    <div id="content">
+    <div id="background">
         <br>
         <div id="search-bar"> 
             <input v-on:keyup.enter="submit" v-model="request" type="text" id="text" name="text" placeholder="Search..."/>
@@ -30,7 +30,5 @@
             <a href="https://www.freepik.com/">freepik.com</a>
         </div>
     </div>
-    <script type="module" src="main.js"></script>
-    
   </body>
 </html>

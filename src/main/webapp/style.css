@@ -18,30 +18,16 @@ body {
   background-position: right top;
   background-attachment: fixed;
   font-family: Georgia, serif;
+  color: black;
 }
 
-/* ul {
-  list-style-type: none;
-  width: 300px;
-  padding: 0;
-  border: 1px solid rgb(199, 199, 199);
-}
-
-ul li {
-  padding: 8px 16px;
-  border-bottom: 1px solid rgb(199, 199, 199);
-}
-
-ul li:last-child {
-  border-bottom: none
-} */
-
-/* Add a black background color to the top navigation */
 .topnav {
   background-color: #00CF91;
   overflow: hidden;
   font-size: 22px;
   display: block;
+  padding-left: 130px;
+  padding-right: 130px;
 }
 
 /* Style the links inside the navigation bar */
@@ -49,19 +35,42 @@ ul li:last-child {
   float: left;
   color: black;
   text-align: center;
-  padding: 15px 26px;
+  padding: 15px;
   text-decoration: none;
-  font-size: 26px;
+  font-size: 30px;
 }
 
-/* Change the color of links on hover */
-.topnav a:hover {
+.topnav a:hover, a.active {
   color: #EDF5EF;
   text-decoration: none;
 }
 
-/* Add a color to the active/current link */
-.topnav a.active {
-  color:#EDF5EF;
-  text-decoration: none;
+#source {
+    position: fixed;
+    display: block;
+    left: 50%;
+    bottom: 20px;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    color: rgb(100, 100, 100);
+}
+
+#source a {
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+}
+
+#background {
+  background-color: rgba(250, 250, 250, 0.5);
+  color: black;
+  
+  display: block;
+  position: absolute;
+  top: 80px;
+  bottom: 20px;
+  right: 130px;
+  left: 130px;
+  padding-bottom: 30px;
+  padding-left: 30px;
+  overflow: auto;
 }
