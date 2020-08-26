@@ -10,31 +10,21 @@
     <script src="search-meal-script.js"></script>
     <script src="script.js"></script>
     <script type="module" src="main.js"></script>
-  </head>  
+  </head>
   <body onload="searchMeal()">
-    <nav class="topnav">
+    <div id="app">
+      <nav class="topnav">
         <b> <a href="/index.html"> Meal Assistant</a> </b>
-    </nav>
-
-    <div id="background">
+      </nav>
+      <div id="background">
         <br>
         <div id="search-bar-block">
-            <div id="search-bar"> 
-                <div id="bar">
-                    <input v-on:keyup.enter="submit" v-model="request" type="text" id="text" name="text" placeholder="Search..." />
-                    <div v-on:click="submit" id="search-icon"></div>
-                </div>
-                <div id="dishes-container">
-                </div>
-            </div>
+          <search-bar></search-bar>
+          <div id="dishes-container"></div>
         </div>
         <br>
-        
-        <div id="source">
-            <a href="https://www.freepik.com/"> 
-                This web page uses images from freepik.com
-            </a>
-        </div>
+        <photo-copyright></photo-copyright>
+      </div>
     </div>
   </body>
 </html>

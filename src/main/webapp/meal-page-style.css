@@ -12,10 +12,6 @@
  See the License for the specific language governing permissions and
  limitations under the License. */
 
-/* body {
-  background-image: url("image/background-meal.jpg");
-} */
-
 body::before {
   background: url("image/background-meal.jpg");
 }
@@ -28,13 +24,13 @@ body::before {
 }
 
 #content {
-    overflow: scroll;
-    display: block;
-    position: absolute;
-    top: 80px;
-    bottom: 90px;
-    right: 30px;
-    left: 30px;
+  overflow: scroll;
+  display: block;
+  position: absolute;
+  top: 80px;
+  bottom: 90px;
+  right: 30px;
+  left: 30px;
 }
 
 #meal-button button {
@@ -59,19 +55,19 @@ body::before {
 }
 
 #meal-button {
-    display: block;
-    position: absolute;
-    bottom: 30px;
-    right: 30px;
-    left: 30px;
+  display: block;
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  left: 30px;
 }
 
-#nav-search{
-    width: 350px;
-    padding: 8px;
-    float: right;
+#nav-search {
+  width: 350px;
+  padding: 8px;
+  float: right;
 }
 
 #warning {
-    padding: 10px;
+  padding: 10px;
 }

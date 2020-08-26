@@ -8,41 +8,34 @@
     <link rel="stylesheet" href="style.css"></link>
     <script src="https://unpkg.com/vue"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCygQF6wGu6hgQ6jELVs6tYjwScw7SewfA"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0FR7vWT5PKPh-Sq95zAjcWXBFXRYl5xI"></script>
     <script src="meal-page-script.js"></script>
     <script src="script.js"></script>
     <script type="module" src="main.js"></script>
   </head>
   <body onload="fetchMealInfo()">
-    <nav class="topnav">
+    <div id="app">
+      <nav class="topnav">
         <b> <a href="/index.html"> Meal Assistant</a> </b>
         <div id="nav-search">
-            <div id="search-bar"> 
-                <div id="bar">
-                    <input v-on:keyup.enter="submit" v-model="request" type="text" id="text" name="text" placeholder="Search..." />
-                    <div v-on:click="submit" id="search-icon"></div>
-                </div>
-            </div>
+          <search-bar></search-bar>
         </div>
-    </nav>
-    <div id="background">
-      <h1 id="title">Best meal ever</h1>
-      <div id="content"> 
-        <p id="description"></p>
-        <h2>Ingredients:</h2>
-        <ul id="ingredients"></ul>
-        <h2>Explore on a map:</h2>
-        <div id="warning"></div>
-        <div id="map"></div>
-      </div>
-      <div id="meal-button">
-        <button onclick="redirectToSimilar()">Show similar meal!</button>
-      </div>
-      </br>
-      <div id="source">
-        <a href="https://www.freepik.com/"> 
-            This web page uses images from freepik.com
-        </a>
+      </nav>
+      <div id="background">
+        <h1 id="title">Best meal ever</h1>
+        <div id="content">
+          <p id="description"></p>
+          <h2>Ingredients:</h2>
+          <ul id="ingredients"></ul>
+          <h2>Explore on a map:</h2>
+          <div id="warning"></div>
+          <div id="map"></div>
+        </div>
+        <div id="meal-button">
+          <button onclick="redirectToSimilar()">Show similar meal!</button>
+        </div>
+        </br>
+        <photo-copyright></photo-copyright>
       </div>
     </div>
   </body>
