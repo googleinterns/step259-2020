@@ -17,6 +17,9 @@ package com.google.sps;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
+import com.google.sps.servlets.MealServlet;
+import com.google.sps.data.Meal;
+
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,25 +36,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import java.io.*;
-import javax.servlet.http.*;
-import org.junit.Test;
-import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import com.google.sps.servlets.MealServlet;
-import com.google.sps.data.Meal;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class GetMealTest{
     private final LocalServiceTestHelper helper =
