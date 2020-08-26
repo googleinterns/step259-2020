@@ -12,19 +12,41 @@
  See the License for the specific language governing permissions and
  limitations under the License. */
 
-body {
-  background-image: url("image/background-main.jpg"); 
+
+body::before {
+  background-image: url("image/background-main.jpg");
 }
 
-#search-bar input {
-  width: 80%;
-  padding: 12px 20px;
+#bar {
+    margin: 2 auto; 
+    display: block;
+}
+
+#search-bar {
+  padding: 10px 20px;
   box-sizing: border-box;
   border: 1px solid black;
   border-radius: 20px;
-  margin: 0 auto;
+  margin: 0 auto; 
   display: block;
   outline: none;
+  background-color: white;
+}
+
+#search-bar-block {
+  width: 80%;
+  margin: 0 auto; 
+  padding: 5px;
+}
+
+#search-bar input {
+  width: 95%;
+  margin: 0 auto;
+  display: inline-block;
+  outline: none;
+  border: none;
+  padding: 5px 0;
+  height: 100%;
 }
 
 #search-title {
@@ -56,6 +78,16 @@ body {
     border-radius: 5px;
 }
 
+#meal-block:hover {
+    border: 2px solid black;
+}
+
+#meal-block:active {
+    border: 2px solid black;
+    background-color: rgba(250, 250, 250, 0.7);
+}
+
+
 #meal-block a, a:hover, a:after {
     text-decoration: none;
     color: black;
@@ -63,7 +95,7 @@ body {
 
 #dishes-container {
     overflow: scroll;
-    display: block;
+    display: inline-block;
     position: absolute;
     top: 80px;
     bottom: 30px;

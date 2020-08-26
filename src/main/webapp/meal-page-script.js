@@ -139,13 +139,23 @@ function moveLocationBy(location, latDiff, lngDiff) {
 
 
 function handleConsentError() {
-  alert(
-    "Error: The Geolocation service failed.\n \
-     Share your location, please."
-  );
+    const warningElement = document.getElementById("warning");
+    warningElement.innerText = '';
+    warningElement.appendChild(createElementByTag("Warning: ", 'b'));
+    warningElement.appendChild(createElementByTag(
+            "The Geolocation service failed. \
+            Share your location, please.", 'span'
+        )
+    );
 }
 
 
 function handleBrowserError() {
-  alert("Error: Your browser doesn't support geolocation.");
+    const warningElement = document.getElementById("warning");
+    warningElement.innerText = '';
+    warningElement.appendChild(createElementByTag("Warning", 'b'));
+    warningElement.appendChild(createElementByTag(
+            "Error: Your browser doesn't support geolocation.", 'span'
+        )
+    );
 }

@@ -12,8 +12,12 @@
  See the License for the specific language governing permissions and
  limitations under the License. */
 
-body {
+/* body {
   background-image: url("image/background-meal.jpg");
+} */
+
+body::before {
+  background: url("image/background-meal.jpg");
 }
 
 #map {
@@ -42,7 +46,16 @@ body {
   height: 40px;
   margin: 5px 0;
   border: none;
+  outline: none;
   border-radius: 20px;
+}
+
+#meal-button button:hover {
+  background-color: #3ccfa3;
+}
+
+#meal-button button:active {
+  background-color: #7cd6bb;
 }
 
 #meal-button {
@@ -55,9 +68,10 @@ body {
 
 #nav-search{
     width: 350px;
-    display: block;
-    margin-top: auto;
-    margin-bottom: auto;
-    padding: 12px;
+    padding: 8px;
     float: right;
+}
+
+#warning {
+    padding: 10px;
 }

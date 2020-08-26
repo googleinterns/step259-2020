@@ -18,16 +18,22 @@
 
     <div id="background">
         <br>
-        <div id="search-bar"> 
-            <input v-on:keyup.enter="submit" v-model="request" type="text" id="text" name="text" placeholder="Search..."/>
+        <div id="search-bar-block">
+            <div id="search-bar"> 
+                <div id="bar">
+                    <input v-on:keyup.enter="submit" v-model="request" type="text" id="text" name="text" placeholder="Search..." />
+                    <div v-on:click="submit" id="search-icon"></div>
+                </div>
+                <div id="dishes-container">
+                </div>
+            </div>
         </div>
         <br>
-        <div id="dishes-container">
-        </div>
-
+        
         <div id="source">
-            This web page uses images from 
-            <a href="https://www.freepik.com/">freepik.com</a>
+            <a href="https://www.freepik.com/"> 
+                This web page uses images from freepik.com
+            </a>
         </div>
     </div>
   </body>

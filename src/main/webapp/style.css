@@ -12,13 +12,28 @@
  See the License for the specific language governing permissions and
  limitations under the License. */
 
-body {
+body, body::before {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: right top;
   background-attachment: fixed;
   font-family: Georgia, serif;
   color: black;
+}
+
+body {
+    z-index: 1;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0; 
+  left: 0;
+  width: 100%; 
+  height: 100%;  
+  opacity: 0.75; 
+  z-index: -1;
 }
 
 .topnav {
@@ -60,10 +75,13 @@ body {
     color: rgb(100, 100, 100);
 }
 
+#source a:hover {
+    text-decoration: underline;
+}
+
 #background {
-  background-color: rgba(250, 250, 250, 0.5);
+  background-color: rgba(250, 250, 250, 0.65);
   color: black;
-  
   display: block;
   position: absolute;
   top: 80px;
@@ -72,5 +90,27 @@ body {
   left: 130px;
   padding-bottom: 30px;
   padding-left: 30px;
-  overflow: auto;
+  padding-right: 30px;
+}
+
+#search-icon {
+    background-image: url('image/search.svg');
+    background-repeat: no-repeat;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    margin: 2 auto;
+    background-color: white;
+    
+    position: absolute;
+    border: black;
+    border-radius: 4px;
+}
+
+#search-icon:hover {
+    background-color: rgba(191, 223, 189, 0.65);
+}
+
+#search-icon:active {
+    background-color: rgba(191, 223, 189, 1);
 }

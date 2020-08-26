@@ -18,11 +18,13 @@
         <b> <a href="/index.html"> Meal Assistant</a> </b>
         <div id="nav-search">
             <div id="search-bar"> 
-                <input v-on:keyup.enter="submit" v-model="request" type="text" id="text" name="text" placeholder="Search..."/>
+                <div id="bar">
+                    <input v-on:keyup.enter="submit" v-model="request" type="text" id="text" name="text" placeholder="Search..." />
+                    <div v-on:click="submit" id="search-icon"></div>
+                </div>
             </div>
         </div>
     </nav>
-
     <div id="background">
       <h1 id="title">Best meal ever</h1>
       <div id="content"> 
@@ -30,6 +32,7 @@
         <h2>Ingredients:</h2>
         <ul id="ingredients"></ul>
         <h2>Explore on a map:</h2>
+        <div id="warning"></div>
         <div id="map"></div>
       </div>
       <div id="meal-button">
@@ -37,8 +40,9 @@
       </div>
       </br>
       <div id="source">
-            This web page uses images from 
-            <a href="https://www.freepik.com/">freepik.com</a>
+        <a href="https://www.freepik.com/"> 
+            This web page uses images from freepik.com
+        </a>
       </div>
     </div>
   </body>
