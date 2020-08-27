@@ -15,7 +15,7 @@
 package com.google.sps;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
 
 import com.google.sps.servlets.MealServlet;
 import com.google.sps.data.Meal;
@@ -36,14 +36,28 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import com.google.gson.Gson;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
-public class GetMealTest{
+public class MealServletTest{
     private final LocalServiceTestHelper helper =
         new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+    private final Meal meal_0 = new Meal(
+        1L, "Fried potato", "Fried potato with mushrooms and onion.",
+            new ArrayList<>(Arrays.asList("potato", "onion", "mushrooms", "oil")), "Main");
+    private final Meal meal_1 = new Meal(
+        1L, "Vegetable soup", "Vegetable soup with onion.",
+            new ArrayList<>(Arrays.asList("potato", "onion", "cabbage", "mushrooms", "water", "carrot", "pumpkin")), "Soup");
+    private final Meal meal_2 = new Meal(
+        2L, "Chocolate cake", "Chocolate cake with butter cream and strawberry.",
+            new ArrayList<>(Arrays.asList("flour", "water", "butter", "cocoa powder", "chocolate", "sugar", "strawberry", "eggs")), "Dessert");
+    private final Meal meal_3 = new Meal(
+        3L, "", "", new ArrayList<>(), "");
+
 
     @Before
     public void setUp() {
@@ -64,28 +78,55 @@ public class GetMealTest{
     }
 
     @Test
-    public void servletTest() throws IOException, ServletException {
+    public void getMealByIdTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        ds.put(createMealEntity(new Meal(
-            0L, "Fried potato", "Fried potato with mushrooms and onion.",
-                new ArrayList<>(Arrays.asList("potato", "onion", "mushrooms", "oil")), "Main")));
-        HttpServletRequest request = mock(HttpServletRequest.class);       
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        when(request.getPathInfo()).thenReturn("meal/0");
-
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
-        when(response.getWriter()).thenReturn(writer);
-
+        ds.put(createMealEntity(meal_2));
+        ds.put(createMealEntity(meal_1));
+        
         MealServlet servlet = new MealServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/meal/1");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
         try {
             servlet.doGet(request, response);
         } catch(Exception e) {
         }
-        
-        assertEquals("application/json", response.getContentType());
-    } 
+        Gson gson = new Gson();
+        String expected = gson.toJson(meal_2);
+        String actual = response.getContentAsString().trim();
 
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getMealListTest() throws IOException, ServletException {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        ds.put(createMealEntity(meal_2));
+        ds.put(createMealEntity(meal_1));
+        
+        MealServlet servlet = new MealServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/meal");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        try {
+            servlet.doGet(request, response);
+        } catch(Exception e) {
+        }
+        HashMap<Long, Meal> meals = new HashMap();
+        meals.put(0L, meal_1);
+        meals.put(1L, meal_2);
+        
+        Gson gson = new Gson();
+        String expected = gson.toJson(meals);
+        String actual = response.getContentAsString().trim();
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * create entity for Datastore with properties of class Meal
+     * @param meal
+     * @return
+     */
     private Entity createMealEntity(Meal meal) {
         Entity mealEntity = new Entity("Meal");
         mealEntity.setProperty("id", meal.getId());
