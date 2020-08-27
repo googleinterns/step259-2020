@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -38,6 +37,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.sps.data.Meal;
 
 
@@ -55,7 +55,7 @@ public class MealServlet extends HttpServlet {
             return;
         }
 
-        if (pathInfo.split("/").length == 2) {
+        if (pathInfo.split("/", -1).length == 2) {
             String requestType = pathInfo.replaceAll("/", "");
             if (requestType.equals("similar")) {
                 // GET meal/similar
@@ -69,18 +69,18 @@ public class MealServlet extends HttpServlet {
 
         // Invalid request format
         // GET meal/*/*
-        if (pathInfo.split("/").length != 2) {
+        if (pathInfo.split("/", -1).length != 2) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
         return;
     }
+
     /**
-     * create entity for Datastore with properties of class Meal
-     * @param meal
-     * @return
+     * Creates an entity for Datastore with properties of class Meal.
+     * @param meal object of class Meal for which the entity is creating.
+     * @return new Entity object with necessary properties.
      */
     private Entity createMealEntity(Meal meal) {
         Entity mealEntity = new Entity("Meal");
@@ -94,13 +94,13 @@ public class MealServlet extends HttpServlet {
     }
 
     private void getMealList(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Query query = new Query("Meal").addSort("id", SortDirection.DESCENDING);
+        Query query = new Query("Meal").addSort("id", SortDirection.ASCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
-        HashMap<Long, Meal> meals = getDataFromDatastore(results);
+        List<Meal> meals = getDataFromDatastore(results);
         Gson gson = new Gson();
         response.setContentType("application/json;");
-        response.getWriter().println(gson.toJson(meals));
+        response.getWriter().print(gson.toJson(meals));
         return;
     }
 
@@ -119,18 +119,18 @@ public class MealServlet extends HttpServlet {
         Query query = new Query("Meal").setFilter(propertyFilter);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
-        HashMap<Long, Meal> meals = getDataFromDatastore(results); 
+        List<Meal> meals = getDataFromDatastore(results); 
         
         if (meals.size() > 1) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
         if (meals.size() == 1) {
-            Meal meal = meals.get(0L);
+            Meal meal = (Meal)meals.get(0);
             if (meal != null) {
                 String gson = new Gson().toJson(meal);
-                response.setContentType("application/json");
-                response.getWriter().println(gson);
+                response.setContentType("application/json;");
+                response.getWriter().print(gson);
                 return;
             }
         }
@@ -138,9 +138,8 @@ public class MealServlet extends HttpServlet {
         return;
     }
 
-    private HashMap<Long, Meal> getDataFromDatastore(PreparedQuery query) {
-        HashMap<Long, Meal> result = new HashMap<>();
-        Long ind = 0L;
+    private List<Meal> getDataFromDatastore(PreparedQuery query) {
+        List<Meal> result = new ArrayList<>();
         for (Entity entity : query.asIterable()) {
             try {
                 Long id = (Long)entity.getProperty("id");
@@ -148,12 +147,15 @@ public class MealServlet extends HttpServlet {
                 String description = (String) entity.getProperty("description");
                 ArrayList<String> ingredients = (ArrayList<String>) entity.getProperty("ingredients");
                 String type = (String) entity.getProperty("type");
+                if (id == null || title.isEmpty() || ingredients.isEmpty()) {
+                    throw new ClassCastException("Invalid value");
+                }
                 Meal meal = new Meal(id, title, description, ingredients, type);
-                result.put(ind, meal);
+                result.add(meal);
             } catch(ClassCastException e) {
+                System.out.println(e);
                 continue;
             }
-            ind++;
         }
         return result;
     }
@@ -177,7 +179,6 @@ public class MealServlet extends HttpServlet {
         response.getWriter().println(gson.toJson(randomId));
         return;
     }
-
 
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
