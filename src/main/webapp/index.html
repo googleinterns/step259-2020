@@ -9,10 +9,10 @@
   </head>
   <body onload="searchMeal()">
     <div id="search-block">
-      <form>
+      <form action="/meal" method="GET">
         <label for="text">Meal Assistant</label>
-        <input type="text" id="text" name="text" placeholder="Search.." />
-        <input type="submit" />
+        <input type="text" id="query" name="query" placeholder="Search.." />
+        <input type="submit"/>
       </form>
       <ul id="dishes-container"></ul>
     </div>
