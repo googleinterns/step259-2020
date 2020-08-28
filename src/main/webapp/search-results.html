@@ -6,25 +6,23 @@
     <link rel="stylesheet" href="search-meal-style.css"></link>
     <link rel="stylesheet" href="style.css"></link>
     <script src="https://unpkg.com/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
     <script src="search-meal-script.js"></script>
     <script src="script.js"></script>
     <script type="module" src="main.js"></script>
   </head>
-  <body>
+  <body onload="searchMeal()">
     <div id="app">
       <nav class="topnav">
         <b> <a href="/index.html"> Meal Assistant</a> </b>
       </nav>
       <div id="background">
-        <div id="search-block">
-          <div id="search-title">
-            Meal Assistant
-          </div>
-          <br>
-          <div id="search-bar-block">
-            <search-bar></search-bar>
-          </div>
+        <br>
+        <div id="search-bar-block">
+          <search-bar></search-bar>
+          <div id="dishes-container"></div>
         </div>
+        <br>
         <photo-copyright></photo-copyright>
       </div>
     </div>

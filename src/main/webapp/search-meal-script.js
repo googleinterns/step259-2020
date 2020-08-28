@@ -13,24 +13,32 @@
 // limitations under the License.
 
 function searchMeal() {
-    fetch('/meal').then(response => response.json()).then((dishes) => 
-    {
-        const container = document.getElementById("dishes-container");
-        container.innerText = "";
-        dishes = dishes ?? {0: ""};
-        Object.entries(dishes).forEach((dish) => {
-            container.appendChild(createListElement(dish[1]));
-        });
+  fetch("/meal")
+    .then((response) => response.json())
+    .then((dishes) => {
+      const container = document.getElementById("dishes-container");
+      container.innerText = "";
+      dishes = dishes ?? { 0: "" };
+      Object.entries(dishes).forEach((dish) => {
+        container.appendChild(createMealBlock(dish[1]));
+      });
     });
 }
 
-function createListElement(dish) {
-    const listElement = document.createElement('li');
-    const id = dish.id;
-    listElement.innerText = dish.title;
-    listElement.onclick = function() {
-        location.href = `meal.html?id=${id}`;
-    };
-    return listElement;
+function createMealBlock(dish) {
+  const blockElement = document.createElement("div");
+  blockElement.setAttribute("id", "meal-block");
+  blockElement.appendChild(createMealElement(dish));
+  return blockElement;
 }
 
+function createMealElement(dish) {
+  const { id, title, description } = dish;
+  const aElement = document.createElement("a");
+  aElement.setAttribute("href", `meal.html?id=${id}`);
+  const insideDivElement = document.createElement("div");
+  insideDivElement.appendChild(createElementByTag(title, "b"));
+  insideDivElement.appendChild(createElementByTag(description, "p"));
+  aElement.appendChild(insideDivElement);
+  return aElement;
+}
