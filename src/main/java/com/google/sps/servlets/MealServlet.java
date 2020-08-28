@@ -37,7 +37,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.sps.data.Meal;
 
 
@@ -148,7 +147,7 @@ public class MealServlet extends HttpServlet {
                 ArrayList<String> ingredients = (ArrayList<String>) entity.getProperty("ingredients");
                 String type = (String) entity.getProperty("type");
                 if (id == null || title.isEmpty() || ingredients.isEmpty()) {
-                    throw new ClassCastException("Invalid value");
+                    continue;
                 }
                 Meal meal = new Meal(id, title, description, ingredients, type);
                 result.add(meal);
