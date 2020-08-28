@@ -80,12 +80,7 @@ public class MealServletTest{
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         request.setPathInfo("/2");
-        
-        try {
-            servlet.doGet(request, response);
-        } catch(Exception e) {
-            System.out.println(e);
-        }
+        servlet.doGet(request, response);
         Gson gson = new Gson();
         String expected = gson.toJson(MEAL_2);
         String actual = response.getContentAsString().trim();
@@ -94,7 +89,7 @@ public class MealServletTest{
     }
 
     // Get an object from empty datastore.
-    // Result: Response Status NOT FOUND.
+    // Expected result: Response Status NOT FOUND.
     @Test
     public void getMealByIdFromEmptyDsTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -103,22 +98,15 @@ public class MealServletTest{
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         request.setPathInfo("/2");
-        
-        try {
-            servlet.doGet(request, response);
-        } catch(Exception e) {
-            System.out.println(e);
-        }
-        MockHttpServletResponse expectedResponse = new MockHttpServletResponse();
-        expectedResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        int expected = expectedResponse.getStatus();
+        servlet.doGet(request, response);
+        int expected = HttpServletResponse.SC_NOT_FOUND;
         int actual = response.getStatus();
 
         assertEquals(expected, actual);
     }
 
     // From datastore, where two entities with same id exist, get an object by this id.
-    // Result: Response Status INTERNAL SERVER ERROR.
+    // Expected result: Response Status INTERNAL SERVER ERROR.
     @Test
     public void getMealByIdForMultipleEntitiesTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -129,43 +117,34 @@ public class MealServletTest{
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         request.setPathInfo("/1");
-        
-        try {
-            servlet.doGet(request, response);
-        } catch(Exception e) {
-            System.out.println(e);
-        }
-        MockHttpServletResponse expectedResponse = new MockHttpServletResponse();
-        expectedResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        int expected = expectedResponse.getStatus();
+        servlet.doGet(request, response);
+        int expected = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
         int actual = response.getStatus();
 
         assertEquals(expected, actual);
     }
 
     // Get a Meal object from datastore, that can't be created (invalid field value).
-    // Result: catching ClassCastException().
-        @Test
+    // Expected result: Response Status SC_NOT_FOUND.
+    @Test
     public void getEmptyMealByIdTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         ds.put(createMealEntity(MEAL_EMPTY));
         ds.put(createMealEntity(MEAL_1));
-        
+
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         request.setPathInfo("/0");
-        
-        try {
-            servlet.doGet(request, response);
-        } catch(ClassCastException e) {
-            System.out.println(e);
-            assertTrue(true);
-        }
+        servlet.doGet(request, response);
+        int expected = HttpServletResponse.SC_NOT_FOUND;
+        int actual = response.getStatus();
+
+        assertEquals(expected, actual);
     }
 
     // Get a full list of objects Meal from datastore.
-    // Result: a JSON String list with two Meal objects.
+    // Expected result: a JSON String list with two Meal objects.
     @Test
     public void getMealListTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -175,11 +154,7 @@ public class MealServletTest{
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-
-        try {
-            servlet.doGet(request, response);
-        } catch(Exception e) {
-        }
+        servlet.doGet(request, response);
         List<Meal> meals = new ArrayList<>();
         meals.add(MEAL_1);
         meals.add(MEAL_2);
@@ -191,7 +166,7 @@ public class MealServletTest{
     }
 
     // Request with invalid pathInfo ""meal/1/"
-    // Result: Response Status BAD REQUEST
+    // Expected result: Response Status BAD REQUEST
     @Test
     public void getInvalidPathInfoTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -201,15 +176,8 @@ public class MealServletTest{
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         request.setPathInfo("/1/");
-        
-        try {
-            servlet.doGet(request, response);
-        } catch(Exception e) {
-            System.out.println(e);
-        }
-        MockHttpServletResponse expectedResponse = new MockHttpServletResponse();
-        expectedResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        int expected = expectedResponse.getStatus();
+        servlet.doGet(request, response);
+        int expected = HttpServletResponse.SC_BAD_REQUEST;
         int actual = response.getStatus();
 
         assertEquals(expected, actual);
