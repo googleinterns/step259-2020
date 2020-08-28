@@ -12,55 +12,108 @@
  See the License for the specific language governing permissions and
  limitations under the License. */
 
-body {
+body,
+body::before {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: right top;
   background-attachment: fixed;
-  font-family: sans-serif;
+  font-family: Georgia, serif;
+  color: black;
 }
 
-form {
-    font-size: 30px;
-    color: rgb(100, 100, 100);
-    text-align: center;
+body {
+  z-index: 1;
 }
 
-div {
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-ul {
-  list-style-type: none;
-  width: 300px;
-  padding: 0;
-  border: 1px solid rgb(199, 199, 199);
-}
-
-ul li {
-  padding: 8px 16px;
-  border-bottom: 1px solid rgb(199, 199, 199);
-}
-
-ul li:last-child {
-  border-bottom: none
-}
-
-button {
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  background-color: rgb(136, 235, 140);
-  color: white;
+  height: 100%;
+  opacity: 0.75;
+  z-index: -1;
+}
+
+.topnav {
+  background-color: #00CF91;
+  overflow: hidden;
+  font-size: 22px;
+  display: block;
+  padding-left: 130px;
+  padding-right: 130px;
+}
+
+
+/* Style the links inside the navigation bar */
+
+.topnav a {
+  float: left;
+  color: black;
+  text-align: center;
+  padding: 15px;
+  text-decoration: none;
+  font-size: 30px;
+}
+
+.topnav a:hover,
+.topnav a.active {
+  color: #EDF5EF;
+  text-decoration: none;
+}
+
+#source {
+  position: fixed;
+  display: block;
+  left: 50%;
+  bottom: 20px;
+  transform: translate(-50%, -50%);
+  margin: 0 auto;
+  color: rgb(100, 100, 100);
+}
+
+#source a {
+  text-decoration: none;
+  color: rgb(100, 100, 100);
+}
+
+#source a:hover {
+  text-decoration: underline;
+}
+
+#background {
+  background-color: rgba(250, 250, 250, 0.65);
+  color: black;
+  display: block;
+  position: absolute;
+  top: 80px;
+  bottom: 20px;
+  right: 130px;
+  left: 130px;
+  padding-bottom: 30px;
   padding-left: 30px;
   padding-right: 30px;
-  height: 40px;
-  margin: 8px 0;
-  border: none;
+}
+
+#search-icon {
+  background-image: url('image/search.svg');
+  background-repeat: no-repeat;
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  margin: 2 auto;
+  background-color: white;
+  position: absolute;
+  border: black;
   border-radius: 4px;
 }
 
-p.source {
-    color: rgb(109, 109, 109);
-    bottom: 0;
+#search-icon:hover {
+  background-color: rgba(191, 223, 189, 0.65);
 }
 
+#search-icon:active {
+  background-color: rgba(191, 223, 189, 1);
+}
