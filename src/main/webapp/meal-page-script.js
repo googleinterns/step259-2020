@@ -26,7 +26,7 @@ function fetchMealInfo() {
         return response.json();
     }).then((meal) => 
     {
-        const { title, description, ingredients } = meal;
+        const { title, description, ingredients, type } = meal;
         const titleElement = document.getElementById("title");
         titleElement.innerText = encodingCheck(title);
         const descriptionElement = document.getElementById("description");
@@ -35,7 +35,7 @@ function fetchMealInfo() {
         for (const ingredient of ingredients) {
             ingredientsElement.appendChild(createElementByTag(encodingCheck(ingredient), 'li'));
         }
-        createMap();
+        createMap(type);
     }).catch((error) => {
         //TODO(sandatsian): display error page
         console.log(error);
@@ -63,7 +63,7 @@ function redirectToSimilar() {
 }
 
 /** Creates a map and adds it to the page. */
-function createMap() {
+function createMap(type) {
   const userLocation = new google.maps.LatLng(55.746514, 37.627022);
   const mapOptions = {
     zoom: 14,
@@ -74,7 +74,7 @@ function createMap() {
     position: userLocation,
     map,
     title: "You are here (probably)",
-    label: "U",
+    label: "You",
     animation: google.maps.Animation.DROP,
   });
 
@@ -95,7 +95,38 @@ function createMap() {
     }
   })
   .then(() => {
-    addRestaurants(map);
+    test(map, type);
+    //addRestaurants(map);
+  });
+}
+
+function test(map, type) {
+    const request = {
+        location: map.getCenter(),
+        radius: '1500',
+        type: ['restaurant', 'cafe', 'meal_takeaway', 'bar', 'bakery'],
+        query: type
+    };
+    const service = new google.maps.places.PlacesService(map);
+    service.textSearch(request, 
+        (results, status, pagination) => {
+            if (status !== "OK") return;
+            for (let i = 0; i < results.length; i++) {
+                createMarker(results[i], map);
+            }
+        }
+    );
+}
+
+function createMarker(place, map) {
+  const marker = new google.maps.Marker({
+    map,
+    position: place.geometry.location,
+    title: place.name,
+  });
+  const infoWindow = new google.maps.InfoWindow({ content: place.name});
+  marker.addListener("click", () => {
+    infoWindow.open(map, marker);
   });
 }
 
@@ -115,10 +146,7 @@ function getCurrentPositionPromise() {
 
 function addRestaurants(map) {
   // Hard coded restaurants
-  const restaurants = [
-    moveLocationBy(map.getCenter(), 0.001, 0.001), 
-    moveLocationBy(map.getCenter(), -0.001, 0.001)
-  ];
+  const restaurants = [];
 
   // TODO(grenlayk): implement restaurants search here
   for (const restaurantLocation of restaurants) {
@@ -129,16 +157,6 @@ function addRestaurants(map) {
         animation: google.maps.Animation.DROP
     });
   }
-}
-
-
-function moveLocationBy(location, latDiff, lngDiff) {
-    const lat = location.lat() + latDiff;
-    const lng = location.lng() + lngDiff;
-    return {
-        lat, 
-        lng
-    };
 }
 
 
