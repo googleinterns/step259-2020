@@ -95,12 +95,6 @@ function createMap(type) {
     }
   })
   .then(() => {
-    test(map, type);
-    //addRestaurants(map);
-  });
-}
-
-function test(map, type) {
     const request = {
         location: map.getCenter(),
         radius: '1500',
@@ -108,25 +102,33 @@ function test(map, type) {
         query: type
     };
     const service = new google.maps.places.PlacesService(map);
-    service.textSearch(request, 
-        (results, status, pagination) => {
-            if (status !== "OK") return;
-            for (let i = 0; i < results.length; i++) {
-                createMarker(results[i], map);
-            }
-        }
-    );
+    getSearchPromise(service, request, map).then((results) => {
+        addRestaurants(results, map);
+    })
+  });
 }
 
-function createMarker(place, map) {
-  const marker = new google.maps.Marker({
-    map,
-    position: place.geometry.location,
-    title: place.name,
-  });
-  const infoWindow = new google.maps.InfoWindow({ content: place.name});
-  marker.addListener("click", () => {
-    infoWindow.open(map, marker);
+function addRestaurants(results, map) {
+    console.log(results);
+
+    for (let i = 0; i < results.length; i++) {
+        createMarker(results[i], map);
+    }
+}
+
+
+function getSearchPromise(service, request) {
+  return new Promise((resolve, reject) => {
+    const onSuccess = (results, status) => {
+        if (status !== "OK") {
+            reject("FAILED");
+        } else {
+            console.log("did search");
+            resolve(results); 
+        }
+    };
+    const onError = () => reject("FAILED");
+    service.textSearch(request, onSuccess, onError);
   });
 }
 
@@ -144,19 +146,16 @@ function getCurrentPositionPromise() {
 }
 
 
-function addRestaurants(map) {
-  // Hard coded restaurants
-  const restaurants = [];
-
-  // TODO(grenlayk): implement restaurants search here
-  for (const restaurantLocation of restaurants) {
-    const marker = new google.maps.Marker({
-        position: restaurantLocation,
-        map,
-        title: "Restaurant",
-        animation: google.maps.Animation.DROP
-    });
-  }
+function createMarker(place, map) {
+  const marker = new google.maps.Marker({
+    map,
+    position: place.geometry.location,
+    title: place.name,
+  });
+  const infoWindow = new google.maps.InfoWindow({ content: place.name});
+  marker.addListener("click", () => {
+    infoWindow.open(map, marker);
+  });
 }
 
 
