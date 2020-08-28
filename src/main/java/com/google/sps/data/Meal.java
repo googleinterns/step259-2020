@@ -35,4 +35,19 @@ public class Meal {
         return this.id;
     }
 
+    public String getTitle() {
+        return this.title;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public ArrayList<String> getIngredients() {
+        return this.ingredients;
+    }
+
+    public String getType() {
+        return this.type;
+    }
 }
