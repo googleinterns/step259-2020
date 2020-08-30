@@ -13,41 +13,43 @@
 // limitations under the License.
 
 function fetchMealInfo() {
-    // use mapping /meal.html?id=<id> 
-    // fetches form server by action meal/<id>
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const id = urlParams.get("id") ?? 0;
+  // use mapping /meal.html?id=<id>
+  // fetches form server by action meal/<id>
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const id = urlParams.get("id") ?? 0;
 
-    fetch('/meal/' + id.toString()).then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    }).then((meal) => 
-    {
-        const { title, description, ingredients, type } = meal;
-        const titleElement = document.getElementById("title");
-        titleElement.innerText = encodingCheck(title);
-        const descriptionElement = document.getElementById("description");
-        descriptionElement.innerText = encodingCheck(description);
-        const ingredientsElement = document.getElementById("ingredients");
-        for (const ingredient of ingredients) {
-            ingredientsElement.appendChild(createElementByTag(encodingCheck(ingredient), 'li'));
-        }
-        createMap(type);
-    }).catch((error) => {
-        //TODO(sandatsian): display error page
-        console.log(error);
+  fetch("/meal/" + id.toString())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((meal) => {
+      const { title, description, ingredients, type } = meal;
+      const titleElement = document.getElementById("title");
+      titleElement.innerText = encodingCheck(title);
+      const descriptionElement = document.getElementById("description");
+      descriptionElement.innerText = encodingCheck(description);
+      const ingredientsElement = document.getElementById("ingredients");
+      for (const ingredient of ingredients) {
+        ingredientsElement.appendChild(
+          createElementByTag(encodingCheck(ingredient), "li")
+        );
+      }
+      createMap(type);
+    })
+    .catch((error) => {
+      //TODO(sandatsian): display error page
+      console.log(error);
     });
 }
-
 
 // solution from https://stackoverflow.com/questions/20174280/nodejs-convert-string-into-utf-8
 function encodingCheck(string) {
   return JSON.parse(JSON.stringify(string));
 }
-
 
 function createElementByTag(text, tag) {
   const element = document.createElement(tag);
@@ -56,9 +58,11 @@ function createElementByTag(text, tag) {
 }
 
 function redirectToSimilar() {
-    fetch('/meal/similar').then(response => response.json()).then((id) => {
-        const url = `/meal.html?id=${id.toString()}`;
-        window.location.replace(url);
+  fetch("/meal/similar")
+    .then((response) => response.json())
+    .then((id) => {
+      const url = `/meal.html?id=${id.toString()}`;
+      window.location.replace(url);
     });
 }
 
@@ -79,72 +83,66 @@ function createMap(type) {
   });
 
   getCurrentPositionPromise()
-  .then(position => {
-    const location = new google.maps.LatLng(
+    .then((position) => {
+      const location = new google.maps.LatLng(
         position.coords.latitude,
         position.coords.longitude
-    );
-    map.setCenter(location);
-    locationMarker.setPosition(location);
-  })
-  .catch(err => {
-    if (err === "NO_GEOLOCATION") {
-      handleBrowserError();
-    } else if (err === "GET_POSITION_FAILED") {
-      handleConsentError();
-    }
-  })
-  .then(() => {
-    const request = {
-        location: map.getCenter(),
-        radius: '1500',
-        type: ['restaurant', 'cafe', 'meal_takeaway', 'bar', 'bakery'],
-        query: type
-    };
-    const service = new google.maps.places.PlacesService(map);
-    getSearchPromise(service, request, map).then((results) => {
-        addRestaurants(results, map);
+      );
+      map.setCenter(location);
+      locationMarker.setPosition(location);
     })
-  });
+    .catch((err) => {
+      if (err === "NO_GEOLOCATION") {
+        handleBrowserError();
+      } else if (err === "GET_POSITION_FAILED") {
+        handleConsentError();
+      }
+    })
+    .then(() => {
+      const request = {
+        location: map.getCenter(),
+        radius: "1500",
+        type: ["restaurant", "cafe", "meal_takeaway", "bar", "bakery"],
+        query: type,
+      };
+      const service = new google.maps.places.PlacesService(map);
+      getSearchPromise(service, request, map).then((results) => {
+        addRestaurants(results, map);
+      });
+    });
 }
 
 function addRestaurants(results, map) {
-    console.log(results);
-
-    for (let i = 0; i < results.length; i++) {
-        createMarker(results[i], map);
-    }
+  for (let i = 0; i < results.length; i++) {
+    createMarker(results[i], map);
+  }
 }
-
 
 function getSearchPromise(service, request) {
   return new Promise((resolve, reject) => {
     const onSuccess = (results, status) => {
-        if (status !== "OK") {
-            reject("FAILED");
-        } else {
-            console.log("did search");
-            resolve(results); 
-        }
+      if (status !== "OK") {
+        reject("FAILED");
+      } else {
+        resolve(results);
+      }
     };
     const onError = () => reject("FAILED");
     service.textSearch(request, onSuccess, onError);
   });
 }
 
-
 function getCurrentPositionPromise() {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
-      reject("NO_GEOLOCATION");  
+      reject("NO_GEOLOCATION");
     } else {
-      const onSuccess = (position) => resolve(position);  
+      const onSuccess = (position) => resolve(position);
       const onError = () => reject("GET_POSITION_FAILED");
       navigator.geolocation.getCurrentPosition(onSuccess, onError);
     }
   });
 }
-
 
 function createMarker(place, map) {
   const marker = new google.maps.Marker({
@@ -152,12 +150,11 @@ function createMarker(place, map) {
     position: place.geometry.location,
     title: place.name,
   });
-  const infoWindow = new google.maps.InfoWindow({ content: place.name});
+  const infoWindow = new google.maps.InfoWindow({ content: place.name });
   marker.addListener("click", () => {
     infoWindow.open(map, marker);
   });
 }
-
 
 function handleConsentError() {
   alert(
@@ -165,7 +162,6 @@ function handleConsentError() {
      Share your location, please."
   );
 }
-
 
 function handleBrowserError() {
   alert("Error: Your browser doesn't support geolocation.");
