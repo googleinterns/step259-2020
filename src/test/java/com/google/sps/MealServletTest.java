@@ -186,26 +186,25 @@ public class MealServletTest{
     // Get a similar meal from Datastore
     // Expected result: String in JSON format with id of second meal.
     
-    // @Test
-    // public void getIdOfSimilarTest() throws IOException, ServletException {
-    //     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-    //     ds.put(createMealEntity(MEAL_1));
-    //     ds.put(createMealEntity(MEAL_2));
+    @Test
+    public void getIdOfSimilarTest() throws IOException, ServletException {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        ds.put(createMealEntity(MEAL_1));
+        ds.put(createMealEntity(MEAL_2));
         
-    //     MealServlet servlet = new MealServlet();
-    //     MockHttpServletRequest request = new MockHttpServletRequest();
-    //     MockHttpServletResponse response = new MockHttpServletResponse();
-    //     request.setPathInfo("/similar?id=1");
-    //     servlet.doGet(request, response);
+        MealServlet servlet = new MealServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.setPathInfo("/similar?id=1");
+        servlet.doGet(request, response);
 
-    //     String similarId = "2";
+        String similarId = "2";
         
-    //     Gson gson = new Gson();
-    //     String expected = gson.toJson(similarId);
-    //     String actual = response.getContentAsString().trim();
-    //     System.out.println(actual);
-    //     // assertEquals(expected, actual);
-    // }
+        Gson gson = new Gson();
+        String expected = gson.toJson(similarId);
+        String actual = response.getContentAsString();
+        assertEquals(expected, actual);
+    }
 
     /**
      * Creates an entity for Datastore with properties of class Meal.

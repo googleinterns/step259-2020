@@ -163,7 +163,6 @@ public class MealServlet extends HttpServlet {
         // Fuction redirect to random page
         // TODO(grenlayk): implement suggestions algorithm here for Product Alpha
         Long pageId = Long.parseLong(getParameter(request, "id", "0"), 10);
-        System.out.println("!!!!   " + pageId);
 
         Query query = new Query("Meal");
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
