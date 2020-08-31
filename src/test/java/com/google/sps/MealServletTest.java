@@ -154,10 +154,55 @@ public class MealServletTest{
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
+        request.setPathInfo("/query=");
         servlet.doGet(request, response);
         List<Meal> meals = new ArrayList<>();
         meals.add(MEAL_1);
         meals.add(MEAL_2);
+        
+        Gson gson = new Gson();
+        String expected = gson.toJson(meals);
+        String actual = response.getContentAsString().trim();
+        assertEquals(expected, actual);
+    }
+
+    // Get a list of objects Meal from datastore by search request "potato onion".
+    // (Check if meal that has both occurrences of searching keywords would be added only once).
+    // Expected result: a JSON String of list with one object MEAL_1.
+    @Test
+    public void getMealListWithTwoKeyWordsTest() throws IOException, ServletException {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        ds.put(createMealEntity(MEAL_1));
+        ds.put(createMealEntity(MEAL_2));
+        
+        MealServlet servlet = new MealServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.setPathInfo("/query=potato onion");
+        servlet.doGet(request, response);
+        List<Meal> meals = new ArrayList<>();
+        meals.add(MEAL_1);
+        
+        Gson gson = new Gson();
+        String expected = gson.toJson(meals);
+        String actual = response.getContentAsString().trim();
+        assertEquals(expected, actual);
+    }
+
+    // Get a list of objects Meal from datastore by search request "meat".
+    // Expected result: a JSON String of empty list.
+    @Test
+    public void getMealListWithEmptyResultTest() throws IOException, ServletException {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        ds.put(createMealEntity(MEAL_1));
+        ds.put(createMealEntity(MEAL_2));
+        
+        MealServlet servlet = new MealServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.setPathInfo("/query=meat");
+        servlet.doGet(request, response);
+        List<Meal> meals = new ArrayList<>();
         
         Gson gson = new Gson();
         String expected = gson.toJson(meals);
