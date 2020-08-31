@@ -13,9 +13,14 @@
 // limitations under the License.
 
 function searchMeal() {
-  fetch("/meal")
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const searchRequest = urlParams.get("query") ?? "";
+  fetch(`/meal/query=${searchRequest}`)
     .then((response) => response.json())
     .then((dishes) => {
+      const amount = document.getElementById('amount-block');
+      amount.innerText = `${dishes.length} results`;
       const container = document.getElementById("dishes-container");
       container.innerText = "";
       dishes = dishes ?? { 0: "" };
