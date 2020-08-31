@@ -102,15 +102,18 @@ function createMap(type) {
         query: type,
       };
       const service = new google.maps.places.PlacesService(map);
-      getSearchPromise(service, request, map).then((results) => {
+      return getSearchPromise(service, request, map).then((results) => {
         addRestaurants(results, map);
       });
+    })
+    .catch((err) => {
+        console.log(err);
     });
 }
 
 function addRestaurants(results, map) {
-  for (let i = 0; i < results.length; i++) {
-    createMarker(results[i], map);
+  for (const result of results) {
+    createMarker(result, map);
   }
 }
 
