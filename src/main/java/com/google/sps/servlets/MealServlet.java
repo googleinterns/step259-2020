@@ -179,7 +179,7 @@ public class MealServlet extends HttpServlet {
         Long randomId = idList.get(index);
         Gson gson = new Gson();
         response.setContentType("application/json;");
-        response.getWriter().println(gson.toJson(randomId));
+        response.getWriter().print(gson.toJson(randomId));
         return;
     }
 

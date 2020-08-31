@@ -186,7 +186,6 @@ public class MealServletTest{
     // Get a similar meal from Datastore
     // Expected result: String in JSON format with id of second meal.
     
-    @Ignore
     @Test
     public void getIdOfSimilarTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -196,10 +195,11 @@ public class MealServletTest{
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        request.setPathInfo("/similar?id=1");
+        request.setPathInfo("/similar");
+        request.addParameter("id", "1");
         servlet.doGet(request, response);
 
-        String similarId = "2";
+        Long similarId = 2L;
         
         Gson gson = new Gson();
         String expected = gson.toJson(similarId);
