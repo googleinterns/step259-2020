@@ -52,7 +52,10 @@ function encodingCheck(string) {
 }
 
 function redirectToSimilar() {
-  fetch("/meal/similar")
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const pageId = urlParams.get("id") ?? 0;
+  fetch(`/meal/similar?id=${pageId.toString()}`)
     .then((response) => response.json())
     .then((id) => {
       const url = `/meal.html?id=${id.toString()}`;
