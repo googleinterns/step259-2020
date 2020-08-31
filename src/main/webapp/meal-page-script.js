@@ -51,12 +51,6 @@ function encodingCheck(string) {
   return JSON.parse(JSON.stringify(string));
 }
 
-function createElementByTag(text, tag) {
-  const element = document.createElement(tag);
-  element.innerText = text;
-  return element;
-}
-
 function redirectToSimilar() {
   fetch("/meal/similar")
     .then((response) => response.json())
@@ -93,9 +87,11 @@ function createMap(type) {
     })
     .catch((err) => {
       if (err === "NO_GEOLOCATION") {
-        handleBrowserError();
+        displayWarning("Your browser doesn't support geolocation.");
       } else if (err === "GET_POSITION_FAILED") {
-        handleConsentError();
+        displayWarning(
+          "The Geolocation service failed. Share your location, please."
+        );
       }
     })
     .then(() => {
@@ -156,13 +152,9 @@ function createMarker(place, map) {
   });
 }
 
-function handleConsentError() {
-  alert(
-    "Error: The Geolocation service failed.\n \
-     Share your location, please."
-  );
-}
-
-function handleBrowserError() {
-  alert("Error: Your browser doesn't support geolocation.");
+function displayWarning(message) {
+  const warningElement = document.getElementById("warning");
+  warningElement.innerText = "";
+  warningElement.appendChild(createElementByTag("Warning: ", "b"));
+  warningElement.appendChild(createElementByTag(message, "span"));
 }

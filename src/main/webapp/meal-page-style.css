@@ -12,23 +12,62 @@
  See the License for the specific language governing permissions and
  limitations under the License. */
 
-body {
-  background-image: url("image/background-meal.jpg");
-  margin-right: 400px;
+body::before {
+  background: url("image/background-meal.jpg");
 }
 
 #map {
   border: thin solid black;
   height: 500px;
   width: 80%;
+  padding-bottom: 10px;
 }
 
 #content {
-  background-color: rgba(255, 255, 255, 0.5);
-  font-size: 20px;
-  color: rgb(100, 100, 100);
+  overflow: scroll;
+  display: block;
+  position: absolute;
+  top: 80px;
+  bottom: 90px;
+  right: 30px;
+  left: 30px;
 }
 
-p.source {
-    position: relative;
+#meal-button button {
+  width: 80%;
+  background-color: #00CF91;
+  color: white;
+  padding-left: 30px;
+  padding-right: 30px;
+  height: 40px;
+  margin: 5px 0;
+  border: none;
+  outline: none;
+  border-radius: 20px;
+}
+
+#meal-button button:hover {
+  background-color: #3ccfa3;
+}
+
+#meal-button button:active {
+  background-color: #7cd6bb;
+}
+
+#meal-button {
+  display: block;
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  left: 30px;
+}
+
+#nav-search {
+  width: 350px;
+  padding: 8px;
+  float: right;
+}
+
+#warning {
+  padding: 10px;
 }

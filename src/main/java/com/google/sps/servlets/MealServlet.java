@@ -14,11 +14,21 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -33,23 +43,6 @@ import com.google.sps.data.Meal;
 @WebServlet("/meal/*")
 public class MealServlet extends HttpServlet {
 
-    private final HashMap<Long, Meal> dishes = new HashMap<Long, Meal> ();
-
-    @Override
-    public void init() {
-        // TODO(sandatsian): implement uploading of dataset from website here
-        dishes.put(0L, new Meal(0L, "Fried potato", "Fried potato with mushrooms and onion.",
-            new ArrayList<>(Arrays.asList("Potato", "Onion", "Mushrooms", "Oil")), "main"));
-        dishes.put(1L, new Meal(1L, "Italian pizza", "Pizza with pineaple, sausage and tomato.",
-            new ArrayList<>(Arrays.asList("Flour", "Water", "Sausage", "Tomato", "Pineaple", "Cheese")), "pizza"));
-        dishes.put(2L, new Meal(2L, "Vegetable soup", "Vegetable soup with onion.",
-            new ArrayList<>(Arrays.asList("Potato", "Onion", "Cabbage", "Mushrooms", "Water", "Carrot", "Pumpkin")), "soup"));
-        dishes.put(3L, new Meal(3L, "Chocolate cake", "Chocolate cake with butter cream and strawberry.",
-            new ArrayList<>(Arrays.asList("Flour", "Water", "Butter", "Cacao", "Chocolate", "Sugar", "Strawberry", "Eggs")), "dessert"));
-        dishes.put(4L, new Meal(4L, "Hot chocolate", "Hot chocolate with sugar and caramel.",
-            new ArrayList<>(Arrays.asList("Cacao", "Sugar", "Milk", "Caramel", "Vanil")), "drinks"));
-    }
-
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo();
@@ -57,14 +50,13 @@ public class MealServlet extends HttpServlet {
         // Get meal
         // GET meal/
         if (pathInfo == null || pathInfo.equals("/")) {
-            searchMeal(request, response);
+            getMealList(request, response);
             return;
         }
 
-        
-        if (pathInfo.split("/").length == 2) {
-            String idString = pathInfo.replaceAll("/", "");
-            if (idString.equals("similar")) {
+        if (pathInfo.split("/", -1).length == 2) {
+            String requestType = pathInfo.replaceAll("/", "");
+            if (requestType.equals("similar")) {
                 // GET meal/similar
                 returnIdOfSimilar(request, response);
             } else { 
@@ -76,21 +68,38 @@ public class MealServlet extends HttpServlet {
 
         // Invalid request format
         // GET meal/*/*
-        if (pathInfo.split("/").length != 2) {
+        if (pathInfo.split("/", -1).length != 2) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
         return;
     }
 
-    private void searchMeal(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Fuction returns hardcoded result
-        // TODO(sandatsian): implement search algorithm here for MVP
-        String gson = new Gson().toJson(dishes);
-        response.setContentType("application/json");
-        response.getWriter().println(gson);
+    /**
+     * Creates an entity for Datastore with properties of class Meal.
+     * @param meal object of class Meal for which the entity is creating.
+     * @return new Entity object with necessary properties.
+     */
+    private Entity createMealEntity(Meal meal) {
+        Entity mealEntity = new Entity("Meal");
+        mealEntity.setProperty("id", meal.getId());
+        mealEntity.setProperty("title", meal.getTitle());
+        mealEntity.setProperty("description", meal.getDescription());
+        mealEntity.setProperty("ingredients", meal.getIngredients());
+        mealEntity.setProperty("type", meal.getType());
+ 
+        return mealEntity;
+    }
+
+    private void getMealList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Query query = new Query("Meal").addSort("id", SortDirection.ASCENDING);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        PreparedQuery results = datastore.prepare(query);
+        List<Meal> meals = getDataFromDatastore(results);
+        Gson gson = new Gson();
+        response.setContentType("application/json;");
+        response.getWriter().print(gson.toJson(meals));
         return;
     }
 
@@ -105,31 +114,70 @@ public class MealServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-
-        Meal meal = dishes.get(id);
-
-        if (meal != null) {
-            String gson = new Gson().toJson(meal);
-            response.setContentType("application/json");
-            response.getWriter().println(gson);
+        Filter propertyFilter = new FilterPredicate("id", FilterOperator.EQUAL, id);
+        Query query = new Query("Meal").setFilter(propertyFilter);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        PreparedQuery results = datastore.prepare(query);
+        List<Meal> meals = getDataFromDatastore(results); 
+        
+        if (meals.size() > 1) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
-
+        if (meals.size() == 1) {
+            Meal meal = (Meal)meals.get(0);
+            if (meal != null) {
+                String gson = new Gson().toJson(meal);
+                response.setContentType("application/json;");
+                response.getWriter().print(gson);
+                return;
+            }
+        }
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
         return;
     }
 
-     private void returnIdOfSimilar(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Fuction redirect to random page
-        // TODO(grenlayk): implement suggestions algorithm here for Product Alpha
-        Random rand = new Random(); 
-        int randomId = rand.nextInt(dishes.size()); 
-        
-        String gson = new Gson().toJson(randomId);
-        response.setContentType("application/json");
-        response.getWriter().println(gson);
+    private List<Meal> getDataFromDatastore(PreparedQuery query) {
+        List<Meal> result = new ArrayList<>();
+        for (Entity entity : query.asIterable()) {
+            try {
+                Long id = (Long)entity.getProperty("id");
+                String title = (String) entity.getProperty("title");
+                String description = (String) entity.getProperty("description");
+                ArrayList<String> ingredients = (ArrayList<String>) entity.getProperty("ingredients");
+                String type = (String) entity.getProperty("type");
+                if (id == null || title.isEmpty() || ingredients.isEmpty()) {
+                    continue;
+                }
+                Meal meal = new Meal(id, title, description, ingredients, type);
+                result.add(meal);
+            } catch(ClassCastException e) {
+                System.out.println(e);
+                continue;
+            }
+        }
+        return result;
     }
 
+    private void returnIdOfSimilar(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Fuction redirect to random page
+        // TODO(grenlayk): implement suggestions algorithm here for Product Alpha
+        Query query = new Query("Meal");
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        PreparedQuery results = datastore.prepare(query);
+        ArrayList<Long> idList = new ArrayList<>();
+        for (Entity entity : results.asIterable()) {
+            Long id = (Long)entity.getProperty("id");
+            idList.add(id);
+        }
+        Random rand = new Random(); 
+        int index = rand.nextInt(getDataFromDatastore(results).size());
+        Long randomId = idList.get(index);
+        Gson gson = new Gson();
+        response.setContentType("application/json;");
+        response.getWriter().println(gson.toJson(randomId));
+        return;
+    }
 
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
