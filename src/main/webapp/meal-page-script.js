@@ -27,7 +27,7 @@ function fetchMealInfo() {
       return response.json();
     })
     .then((meal) => {
-      const { title, description, ingredients } = meal;
+      const { title, description, ingredients, type } = meal;
       const titleElement = document.getElementById("title");
       titleElement.innerText = encodingCheck(title);
       const descriptionElement = document.getElementById("description");
@@ -38,7 +38,7 @@ function fetchMealInfo() {
           createElementByTag(encodingCheck(ingredient), "li")
         );
       }
-      createMap();
+      createMap(type);
     })
     .catch((error) => {
       //TODO(sandatsian): display error page
@@ -64,7 +64,7 @@ function redirectToSimilar() {
 }
 
 /** Creates a map and adds it to the page. */
-function createMap() {
+function createMap(type) {
   const userLocation = new google.maps.LatLng(55.746514, 37.627022);
   const mapOptions = {
     zoom: 14,
@@ -75,7 +75,7 @@ function createMap() {
     position: userLocation,
     map,
     title: "You are here (probably)",
-    label: "U",
+    label: "You",
     animation: google.maps.Animation.DROP,
   });
 
@@ -98,8 +98,37 @@ function createMap() {
       }
     })
     .then(() => {
-      addRestaurants(map);
+      const request = {
+        location: map.getCenter(),
+        radius: "1500",
+        type: ["restaurant", "cafe", "meal_takeaway", "bar", "bakery"],
+        query: type,
+      };
+      const service = new google.maps.places.PlacesService(map);
+      getSearchPromise(service, request, map).then((results) => {
+        addRestaurants(results, map);
+      });
     });
+}
+
+function addRestaurants(results, map) {
+  for (let i = 0; i < results.length; i++) {
+    createMarker(results[i], map);
+  }
+}
+
+function getSearchPromise(service, request) {
+  return new Promise((resolve, reject) => {
+    const onSuccess = (results, status) => {
+      if (status !== "OK") {
+        reject("FAILED");
+      } else {
+        resolve(results);
+      }
+    };
+    const onError = () => reject("FAILED");
+    service.textSearch(request, onSuccess, onError);
+  });
 }
 
 function getCurrentPositionPromise() {
@@ -114,31 +143,16 @@ function getCurrentPositionPromise() {
   });
 }
 
-function addRestaurants(map) {
-  // Hard coded restaurants
-  const restaurants = [
-    moveLocationBy(map.getCenter(), 0.001, 0.001),
-    moveLocationBy(map.getCenter(), -0.001, 0.001),
-  ];
-
-  // TODO(grenlayk): implement restaurants search here
-  for (const restaurantLocation of restaurants) {
-    const marker = new google.maps.Marker({
-      position: restaurantLocation,
-      map,
-      title: "Restaurant",
-      animation: google.maps.Animation.DROP,
-    });
-  }
-}
-
-function moveLocationBy(location, latDiff, lngDiff) {
-  const lat = location.lat() + latDiff;
-  const lng = location.lng() + lngDiff;
-  return {
-    lat,
-    lng,
-  };
+function createMarker(place, map) {
+  const marker = new google.maps.Marker({
+    map,
+    position: place.geometry.location,
+    title: place.name,
+  });
+  const infoWindow = new google.maps.InfoWindow({ content: place.name });
+  marker.addListener("click", () => {
+    infoWindow.open(map, marker);
+  });
 }
 
 function displayWarning(message) {
