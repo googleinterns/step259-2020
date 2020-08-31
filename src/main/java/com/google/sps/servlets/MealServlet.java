@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -38,7 +39,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.sps.data.Meal;
-
 
 @WebServlet("/meal/*")
 public class MealServlet extends HttpServlet {
@@ -59,7 +59,10 @@ public class MealServlet extends HttpServlet {
             if (requestType.equals("similar")) {
                 // GET meal/similar
                 returnIdOfSimilar(request, response);
-            } else { 
+            } else if (requestType.contains("query=")) { 
+                // GET meal/query=
+                getMealList(request, response);
+            } else {
                 // GET meal/<meal_id>
                 getMealById(request, response);
             }
@@ -93,13 +96,34 @@ public class MealServlet extends HttpServlet {
     }
 
     private void getMealList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String pathInfo = request.getPathInfo();
+        if (pathInfo == null) {
+            pathInfo = "";
+        }
+        List<String> params = new ArrayList<>(
+            Arrays.asList(pathInfo.replaceAll("/query=", "").trim().replaceAll("\\s+", " ").split(" ")));
         Query query = new Query("Meal").addSort("id", SortDirection.ASCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
         List<Meal> meals = getDataFromDatastore(results);
+        List<Meal> searchedMeal = new ArrayList<>();
+
+        // Every object Meal adds if it contains at least one keyword in at least one field 
+        // (type, title, description, ingredients).
+        for (Meal meal : meals) {
+            for (String param : params) {
+                if (!searchedMeal.contains(meal) && 
+                    (meal.getTitle().contains(param) ||
+                    meal.getDescription().contains(param) ||
+                    meal.getType().contains(param) ||
+                    meal.getIngredients().contains(param))) {
+                        searchedMeal.add(meal);
+                    }
+            }
+        }
         Gson gson = new Gson();
         response.setContentType("application/json;");
-        response.getWriter().print(gson.toJson(meals));
+        response.getWriter().println(gson.toJson(searchedMeal));
         return;
     }
 
