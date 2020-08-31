@@ -57,7 +57,7 @@ public class MealServlet extends HttpServlet {
         if (pathInfo.split("/", -1).length == 2) {
             String requestType = pathInfo.replaceAll("/", "");
             if (requestType.equals("similar")) {
-                // GET meal/similar
+                // GET meal/similar?id=<pageId>
                 returnIdOfSimilar(request, response);
             } else { 
                 // GET meal/<meal_id>
@@ -163,6 +163,7 @@ public class MealServlet extends HttpServlet {
         // Fuction redirect to random page
         // TODO(grenlayk): implement suggestions algorithm here for Product Alpha
         Long pageId = Long.parseLong(getParameter(request, "id", "0"), 10);
+        System.out.println("!!!!   " + pageId);
 
         Query query = new Query("Meal");
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

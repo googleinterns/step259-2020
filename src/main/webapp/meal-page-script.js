@@ -19,7 +19,7 @@ function fetchMealInfo() {
   const urlParams = new URLSearchParams(queryString);
   const id = urlParams.get("id") ?? 0;
 
-  fetch("/meal/" + id.toString())
+  fetch(`/meal/${id.toString()}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
