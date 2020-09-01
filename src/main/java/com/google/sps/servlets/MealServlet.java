@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -49,6 +48,7 @@ public class MealServlet extends HttpServlet {
 
         // Get meal
         // GET meal/
+        // GET meal?query=<smth>
         if (pathInfo == null || pathInfo.equals("/")) {
             getMealList(request, response);
             return;
@@ -59,9 +59,6 @@ public class MealServlet extends HttpServlet {
             if (requestType.equals("similar")) {
                 // GET meal/similar
                 returnIdOfSimilar(request, response);
-            } else if (requestType.contains("query=")) { 
-                // GET meal/query=
-                getMealList(request, response);
             } else {
                 // GET meal/<meal_id>
                 getMealById(request, response);
@@ -96,9 +93,7 @@ public class MealServlet extends HttpServlet {
     }
 
     private void getMealList(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Search by full query request.
-        String p = getParameter(request, "query", "");
-        List<String> params = new ArrayList<>(Arrays.asList(p));
+        List<String> params = Arrays.asList(getParameter(request, "query", "").trim().replaceAll("\\s+", " ").split(" "));
         Query query = new Query("Meal").addSort("id", SortDirection.ASCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
@@ -108,19 +103,13 @@ public class MealServlet extends HttpServlet {
         // Every object Meal adds if it contains at least one keyword in at least one field 
         // (type, title, description, ingredients).
         for (Meal meal : meals) {
-            for (String param : params) {
-                if (!searchedMeal.contains(meal) && 
-                    (meal.getTitle().contains(param) ||
-                    meal.getDescription().contains(param) ||
-                    meal.getType().contains(param) ||
-                    meal.getIngredients().contains(param))) {
-                        searchedMeal.add(meal);
-                    }
+            if (!searchedMeal.contains(meal) && isResultOfSearch(meal, params)) {
+                searchedMeal.add(meal);
             }
         }
         Gson gson = new Gson();
         response.setContentType("application/json;");
-        response.getWriter().println(gson.toJson(searchedMeal));
+        response.getWriter().print(gson.toJson(searchedMeal));
         return;
     }
 
@@ -196,10 +185,29 @@ public class MealServlet extends HttpServlet {
         Long randomId = idList.get(index);
         Gson gson = new Gson();
         response.setContentType("application/json;");
-        response.getWriter().println(gson.toJson(randomId));
+        response.getWriter().print(gson.toJson(randomId));
         return;
     }
 
+    private Boolean isResultOfSearch(Meal meal, List<String> params) {
+        for (String param : params) {
+            if (meal.getTitle().contains(param)) {
+                return true;
+            } 
+            if (meal.getDescription().contains(param)) {
+                return true;
+            } 
+            if (meal.getType().contains(param)) {
+                return true;
+            }
+            for (String ingredient : meal.getIngredients()) {
+                if (ingredient.contains(param)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
         if (value == null) {
