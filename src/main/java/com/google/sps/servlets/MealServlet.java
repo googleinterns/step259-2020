@@ -96,12 +96,9 @@ public class MealServlet extends HttpServlet {
     }
 
     private void getMealList(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String pathInfo = request.getPathInfo();
-        if (pathInfo == null) {
-            pathInfo = "";
-        }
-        List<String> params = new ArrayList<>(
-            Arrays.asList(pathInfo.replaceAll("/query=", "").trim().replaceAll("\\s+", " ").split(" ")));
+        // Search by full query request.
+        String p = getParameter(request, "query", "");
+        List<String> params = new ArrayList<>(Arrays.asList(p));
         Query query = new Query("Meal").addSort("id", SortDirection.ASCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
