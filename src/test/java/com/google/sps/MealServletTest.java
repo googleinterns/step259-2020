@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -184,8 +183,7 @@ public class MealServletTest{
     }
 
     // Get a similar meal from Datastore
-    // Expected result: String in JSON format with id of second meal.
-    
+    // Expected result: Long in JSON format with id of second meal.
     @Test
     public void getIdOfSimilarTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -199,6 +197,7 @@ public class MealServletTest{
         request.addParameter("id", "1");
         servlet.doGet(request, response);
 
+        // returnIdOfSimilar() should not return id of the current meal page
         Long similarId = 2L;
         
         Gson gson = new Gson();
