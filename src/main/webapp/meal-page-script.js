@@ -19,7 +19,7 @@ function fetchMealInfo() {
   const urlParams = new URLSearchParams(queryString);
   const id = urlParams.get("id") ?? 0;
 
-  fetch(`/meal/${id.toString()}`)
+  fetch(`/meal/${id}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -105,15 +105,18 @@ function createMap(type) {
         query: type,
       };
       const service = new google.maps.places.PlacesService(map);
-      getSearchPromise(service, request, map).then((results) => {
+      return getSearchPromise(service, request, map).then((results) => {
         addRestaurants(results, map);
       });
+    })
+    .catch((err) => {
+        console.log(`Catched error: ${err}`);
     });
 }
 
 function addRestaurants(results, map) {
-  for (let i = 0; i < results.length; i++) {
-    createMarker(results[i], map);
+  for (const result of results) {
+    createMarker(result, map);
   }
 }
 
