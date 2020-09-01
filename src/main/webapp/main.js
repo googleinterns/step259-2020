@@ -11,16 +11,16 @@ Vue.component("photo-copyright", {
 Vue.component("search-bar", {
   template: `
   <div id="search-bar">
-    <div id="bar">
+    <form id="bar" action="/meal">
       <input v-on:keyup.enter="submit" v-model="request" type="text" id="query" name="query" placeholder="Search..." />
       <div v-on:click="submit" type=submit id="search-icon"></div>
-    </div>
+    </form>
   </div>
   `,
   methods: {
     submit: function () {
       const searchLine = document.getElementById('query').value;
-      window.location.replace('search-results.html?query=' + searchLine); 
+      window.location.replace(`search-results.html?query=${encodeURIComponent(searchLine)}`); 
     },
   },
   data() {

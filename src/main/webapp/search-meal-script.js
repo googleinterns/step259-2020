@@ -15,12 +15,13 @@
 function searchMeal() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const searchRequest = urlParams.get("query") ?? "";
-  fetch(`/meal/query=${searchRequest}`)
+  const searchLine = urlParams.get("query") ?? "";
+  fetch(`/meal?query=${searchLine}`)
     .then((response) => response.json())
     .then((dishes) => {
       const amount = document.getElementById('amount-block');
-      amount.innerText = `${dishes.length} results`;
+      const isSingular = dishes.length == 1;
+      amount.innerText = `${dishes.length} result${isSingular? "" : "s"}`;
       const container = document.getElementById("dishes-container");
       container.innerText = "";
       dishes = dishes ?? { 0: "" };
