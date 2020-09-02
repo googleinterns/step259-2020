@@ -110,7 +110,7 @@ function createMap(type) {
       });
     })
     .catch((err) => {
-        console.log(`Catched error: ${err}`);
+        console.log(`Caught error: ${err}`);
     });
 }
 
