@@ -94,22 +94,29 @@ public class MealServlet extends HttpServlet {
 
     private void getMealList(HttpServletRequest request, HttpServletResponse response) throws IOException {
         List<String> params = Arrays.asList(getParameter(request, "query", "").trim().replaceAll("\\s+", " ").split(" "));
+        params.removeAll(Arrays.asList("\\"));
         Query query = new Query("Meal").addSort("id", SortDirection.ASCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
         List<Meal> meals = getDataFromDatastore(results);
-        List<Meal> searchedMeal = new ArrayList<>();
+
+        // In case if search request is empty.
+        if (params.isEmpty()) {
+            response.setContentType("application/json;");
+            response.getWriter().print(new Gson().toJson(meals));
+            return;
+        }
 
         // Every object Meal adds if it contains at least one keyword in at least one field 
         // (type, title, description, ingredients).
+        List<Meal> searchedMeal = new ArrayList<>();
         for (Meal meal : meals) {
-            if (!searchedMeal.contains(meal) && isResultOfSearch(meal, params)) {
+            if (isResultOfSearch(meal, params)) {
                 searchedMeal.add(meal);
             }
         }
-        Gson gson = new Gson();
         response.setContentType("application/json;");
-        response.getWriter().print(gson.toJson(searchedMeal));
+        response.getWriter().print(new Gson().toJson(searchedMeal));
         return;
     }
 
