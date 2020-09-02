@@ -11,10 +11,10 @@ Vue.component("photo-copyright", {
 Vue.component("search-bar", {
   template: `
   <div id="search-bar">
-    <form id="bar" action="/meal">
+    <div id="bar">
       <input v-on:keyup.enter="submit" v-model="request" type="text" id="query" name="query" placeholder="Search..." />
       <div v-on:click="submit" type=submit id="search-icon"></div>
-    </form>
+    </div>
   </div>
   `,
   methods: {

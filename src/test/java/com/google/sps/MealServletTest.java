@@ -153,7 +153,6 @@ public class MealServletTest{
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        request.setParameter("query", "");
         servlet.doGet(request, response);
 
         List<Meal> meals = new ArrayList<>();
