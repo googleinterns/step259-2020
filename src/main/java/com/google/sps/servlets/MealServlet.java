@@ -39,7 +39,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.sps.data.Meal;
 
-
 @WebServlet("/meal/*")
 public class MealServlet extends HttpServlet {
 
@@ -49,6 +48,7 @@ public class MealServlet extends HttpServlet {
 
         // Get meal
         // GET meal/
+        // GET meal?query=<smth>
         if (pathInfo == null || pathInfo.equals("/")) {
             getMealList(request, response);
             return;
@@ -59,7 +59,7 @@ public class MealServlet extends HttpServlet {
             if (requestType.equals("similar")) {
                 // GET meal/similar?id=<meal_id>
                 returnIdOfSimilar(request, response);
-            } else { 
+            } else {
                 // GET meal/<meal_id>
                 getMealById(request, response);
             }
@@ -93,13 +93,30 @@ public class MealServlet extends HttpServlet {
     }
 
     private void getMealList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        List<String> params = Arrays.asList(getParameter(request, "query", "").trim().replaceAll("\\s+", " ").split(" "));
+        params.removeAll(Arrays.asList("\\"));
         Query query = new Query("Meal").addSort("id", SortDirection.ASCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
         List<Meal> meals = getDataFromDatastore(results);
-        Gson gson = new Gson();
+
+        // In case if search request is empty.
+        if (params.isEmpty()) {
+            response.setContentType("application/json;");
+            response.getWriter().print(new Gson().toJson(meals));
+            return;
+        }
+
+        // Every object Meal adds if it contains at least one keyword in at least one field 
+        // (type, title, description, ingredients).
+        List<Meal> searchedMeal = new ArrayList<>();
+        for (Meal meal : meals) {
+            if (isResultOfSearch(meal, params)) {
+                searchedMeal.add(meal);
+            }
+        }
         response.setContentType("application/json;");
-        response.getWriter().print(gson.toJson(meals));
+        response.getWriter().print(new Gson().toJson(searchedMeal));
         return;
     }
 
@@ -183,6 +200,25 @@ public class MealServlet extends HttpServlet {
         return;
     }
 
+    private Boolean isResultOfSearch(Meal meal, List<String> params) {
+        for (String param : params) {
+            if (meal.getTitle().contains(param)) {
+                return true;
+            } 
+            if (meal.getDescription().contains(param)) {
+                return true;
+            } 
+            if (meal.getType().contains(param)) {
+                return true;
+            }
+            for (String ingredient : meal.getIngredients()) {
+                if (ingredient.contains(param)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
         if (value == null) {

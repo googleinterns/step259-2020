@@ -66,9 +66,8 @@ public class MealServletTest{
         helper.tearDown();
     }
 
-    // TODO(sandatsian): add more specific tests for search feature and get list feature.
-    // TODO(grenlayk): add test for get similar feature.
     // Get one of the existing objects Meal by id.
+    // Expected result: JSON String with one object Meal.
     @Test
     public void getMealByIdTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -98,9 +97,9 @@ public class MealServletTest{
         MockHttpServletResponse response = new MockHttpServletResponse();
         request.setPathInfo("/2");
         servlet.doGet(request, response);
+
         int expected = HttpServletResponse.SC_NOT_FOUND;
         int actual = response.getStatus();
-
         assertEquals(expected, actual);
     }
 
@@ -117,9 +116,9 @@ public class MealServletTest{
         MockHttpServletResponse response = new MockHttpServletResponse();
         request.setPathInfo("/1");
         servlet.doGet(request, response);
+
         int expected = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
         int actual = response.getStatus();
-
         assertEquals(expected, actual);
     }
 
@@ -136,9 +135,9 @@ public class MealServletTest{
         MockHttpServletResponse response = new MockHttpServletResponse();
         request.setPathInfo("/0");
         servlet.doGet(request, response);
+
         int expected = HttpServletResponse.SC_NOT_FOUND;
         int actual = response.getStatus();
-
         assertEquals(expected, actual);
     }
 
@@ -154,10 +153,54 @@ public class MealServletTest{
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doGet(request, response);
+
         List<Meal> meals = new ArrayList<>();
         meals.add(MEAL_1);
         meals.add(MEAL_2);
+        Gson gson = new Gson();
+        String expected = gson.toJson(meals);
+        String actual = response.getContentAsString().trim();
+        assertEquals(expected, actual);
+    }
+
+    // Get a list of objects Meal from datastore by search request "potato onion".
+    // (Check if meal that has both occurrences of searching keywords would be added only once).
+    // Expected result: a JSON String of list with one object MEAL_1.
+    @Test
+    public void getMealListWithTwoKeyWordsTest() throws IOException, ServletException {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        ds.put(createMealEntity(MEAL_1));
+        ds.put(createMealEntity(MEAL_2));
         
+        MealServlet servlet = new MealServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.setParameter("query", "potato onion");
+        servlet.doGet(request, response);
+
+        List<Meal> meals = new ArrayList<>();
+        meals.add(MEAL_1);
+        Gson gson = new Gson();
+        String expected = gson.toJson(meals);
+        String actual = response.getContentAsString().trim();
+        assertEquals(expected, actual);
+    }
+
+    // Get a list of objects Meal from datastore by search request "meat".
+    // Expected result: a JSON String of empty list.
+    @Test
+    public void getMealListWithEmptyResultTest() throws IOException, ServletException {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        ds.put(createMealEntity(MEAL_1));
+        ds.put(createMealEntity(MEAL_2));
+        
+        MealServlet servlet = new MealServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.setParameter("query", "meat");
+        servlet.doGet(request, response);
+
+        List<Meal> meals = new ArrayList<>();
         Gson gson = new Gson();
         String expected = gson.toJson(meals);
         String actual = response.getContentAsString().trim();
@@ -176,9 +219,9 @@ public class MealServletTest{
         MockHttpServletResponse response = new MockHttpServletResponse();
         request.setPathInfo("/1/");
         servlet.doGet(request, response);
+
         int expected = HttpServletResponse.SC_BAD_REQUEST;
         int actual = response.getStatus();
-
         assertEquals(expected, actual);
     }
 

@@ -12,15 +12,15 @@ Vue.component("search-bar", {
   template: `
   <div id="search-bar">
     <div id="bar">
-      <input v-on:keyup.enter="submit" v-model="request" type="text" id="text" name="text" placeholder="Search..." />
-      <div v-on:click="submit" id="search-icon"></div>
+      <input v-on:keyup.enter="submit" v-model="request" type="text" id="query" name="query" placeholder="Search..." />
+      <div v-on:click="submit" type=submit id="search-icon"></div>
     </div>
   </div>
   `,
   methods: {
     submit: function () {
-      window.location.replace("/search-results.html");
-      searchMeal();
+      const searchLine = document.getElementById('query').value;
+      window.location.replace(`search-results.html?query=${encodeURIComponent(searchLine)}`); 
     },
   },
   data() {
