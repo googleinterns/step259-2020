@@ -57,7 +57,7 @@ public class MealServlet extends HttpServlet {
         if (pathInfo.split("/", -1).length == 2) {
             String requestType = pathInfo.replaceAll("/", "");
             if (requestType.equals("similar")) {
-                // GET meal/similar
+                // GET meal/similar?id=<meal_id>
                 returnIdOfSimilar(request, response);
             } else { 
                 // GET meal/<meal_id>
@@ -162,20 +162,24 @@ public class MealServlet extends HttpServlet {
     private void returnIdOfSimilar(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Fuction redirect to random page
         // TODO(grenlayk): implement suggestions algorithm here for Product Alpha
+        Long mealId = Long.parseLong(getParameter(request, "id", "0"));
+
         Query query = new Query("Meal");
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
         ArrayList<Long> idList = new ArrayList<>();
         for (Entity entity : results.asIterable()) {
             Long id = (Long)entity.getProperty("id");
-            idList.add(id);
+            if (id != null && !id.equals(mealId)) {
+                idList.add(id);
+            }
         }
         Random rand = new Random(); 
-        int index = rand.nextInt(getDataFromDatastore(results).size());
+        int index = rand.nextInt(idList.size());
         Long randomId = idList.get(index);
         Gson gson = new Gson();
         response.setContentType("application/json;");
-        response.getWriter().println(gson.toJson(randomId));
+        response.getWriter().print(gson.toJson(randomId));
         return;
     }
 

@@ -19,7 +19,7 @@ function fetchMealInfo() {
   const urlParams = new URLSearchParams(queryString);
   const id = urlParams.get("id") ?? 0;
 
-  fetch("/meal/" + id.toString())
+  fetch(`/meal/${id}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -52,7 +52,10 @@ function encodingCheck(string) {
 }
 
 function redirectToSimilar() {
-  fetch("/meal/similar")
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const pageId = urlParams.get("id") ?? 0;
+  fetch(`/meal/similar?id=${pageId.toString()}`)
     .then((response) => response.json())
     .then((id) => {
       const url = `/meal.html?id=${id.toString()}`;
@@ -107,7 +110,7 @@ function createMap(type) {
       });
     })
     .catch((err) => {
-        console.log(err);
+        console.log(`Caught error: ${err}`);
     });
 }
 

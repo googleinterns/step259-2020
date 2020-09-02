@@ -54,7 +54,6 @@ public class MealServletTest{
     private static final Meal MEAL_2 = new Meal(
         2L, "Chocolate cake", "Chocolate cake with butter cream and strawberry.",
             new ArrayList<>(Arrays.asList("flour", "water", "butter", "strawberry")), "Dessert");
-    
 
 
     @Before
@@ -180,6 +179,30 @@ public class MealServletTest{
         int expected = HttpServletResponse.SC_BAD_REQUEST;
         int actual = response.getStatus();
 
+        assertEquals(expected, actual);
+    }
+
+    // Get a similar meal from Datastore
+    // Expected result: Long in JSON format with id of second meal.
+    @Test
+    public void getIdOfSimilarTest() throws IOException, ServletException {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        ds.put(createMealEntity(MEAL_1));
+        ds.put(createMealEntity(MEAL_2));
+        
+        MealServlet servlet = new MealServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.setPathInfo("/similar");
+        request.addParameter("id", "1");
+        servlet.doGet(request, response);
+
+        // returnIdOfSimilar() should not return id of the current meal page
+        Long similarId = 2L;
+        
+        Gson gson = new Gson();
+        String expected = gson.toJson(similarId);
+        String actual = response.getContentAsString();
         assertEquals(expected, actual);
     }
 
