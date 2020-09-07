@@ -16,6 +16,9 @@ function searchMeal() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const searchLine = urlParams.get("query") ?? "";
+  app.input = searchLine;
+  console.log(app.input);
+
   fetch(`/meal?query=${searchLine}`)
     .then((response) => response.json())
     .then((dishes) => {
@@ -28,6 +31,7 @@ function searchMeal() {
       Object.entries(dishes).forEach((dish) => {
         container.appendChild(createMealBlock(dish[1]));
       });
+      console.log(app.input);
     });
 }
 

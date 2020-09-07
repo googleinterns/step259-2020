@@ -19,8 +19,10 @@
       <div id="background">
         <br>
         <div id="search-bar-block">
-          <search-bar></search-bar>
-          <div id="amount-block"></div>
+          <search-bar :input.sync="input"></search-bar>
+          <div id="amount-container">
+              <div id="amount-block"></div>
+          </div>
           <div id="dishes-container"></div>
         </div>
         <br>
