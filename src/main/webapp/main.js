@@ -18,21 +18,11 @@ Vue.component("search-bar", {
   template: `
   <div id="search-bar">
     <div id="bar">
-      <input v-on:keyup.enter="submit" type="text" id="query" name="query" placeholder="Search..." :value="request" />
+      <input v-on:keyup.enter="submit" type="text" id="query" name="query" placeholder="Search..." />
       <div v-on:click="submit" type=submit id="search-icon"></div>
     </div>
   </div>
   `,
-  watch: { 
-    input: { 
-        immediate: true, 
-        deep: true,
-        handler (newVal, oldVal) {
-            console.log('Prop changed: ', newVal, ' | was: ', oldVal);
-        },
-    }
-
-  },
   methods: {
     submit: function () {
       const searchLine = document.getElementById('query').value;
@@ -48,9 +38,4 @@ Vue.component("search-bar", {
 
 const app = new Vue({
   el: "#app",
-  data: {
-      input: ""
-  },
-  methods: {
-  }
 });
