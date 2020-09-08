@@ -76,22 +76,6 @@ public class MealServlet extends HttpServlet {
         return;
     }
 
-    /**
-     * Creates an entity for Datastore with properties of class Meal.
-     * @param meal object of class Meal for which the entity is creating.
-     * @return new Entity object with necessary properties.
-     */
-    private Entity createMealEntity(Meal meal) {
-        Entity mealEntity = new Entity("Meal");
-        mealEntity.setProperty("id", meal.getId());
-        mealEntity.setProperty("title", meal.getTitle());
-        mealEntity.setProperty("description", meal.getDescription());
-        mealEntity.setProperty("ingredients", meal.getIngredients());
-        mealEntity.setProperty("type", meal.getType());
- 
-        return mealEntity;
-    }
-
     private void getMealList(HttpServletRequest request, HttpServletResponse response) throws IOException {
         List<String> params = Arrays.asList(getParameter(request, "query", "").trim().replaceAll("\\s+", " ").split(" "));
         params.removeAll(Arrays.asList("\\"));
