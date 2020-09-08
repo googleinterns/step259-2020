@@ -18,3 +18,7 @@ function createElementByTag(text, tag) {
   element.innerText = text;
   return element;
 }
+
+function capitalizeFirst(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}

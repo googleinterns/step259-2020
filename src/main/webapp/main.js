@@ -9,10 +9,16 @@ Vue.component("photo-copyright", {
 });
 
 Vue.component("search-bar", {
+  props: {
+    input: {
+        type: String,
+        required: false
+    }
+  },
   template: `
   <div id="search-bar">
     <div id="bar">
-      <input v-on:keyup.enter="submit" v-model="request" type="text" id="query" name="query" placeholder="Search..." />
+      <input v-on:keyup.enter="submit" type="text" id="query" name="query" placeholder="Search..." />
       <div v-on:click="submit" type=submit id="search-icon"></div>
     </div>
   </div>
