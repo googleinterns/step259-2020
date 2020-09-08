@@ -19,7 +19,11 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Entity;
+import com.google.gson.Gson;
+import com.google.sps.data.Meal;
+import com.google.sps.data.DataConverter;
 import java.io.IOException;  
+import org.apache.commons.io.IOUtils;
 import java.net.URLDecoder;  
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,44 +34,27 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.Gson;
-import com.google.sps.data.Meal;
 
 @WebServlet("/import")
 public class WikiImportServlet extends HttpServlet {
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        String json = request.getQueryString().replaceAll("input=", "");
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String json = IOUtils.toString(request.getReader());
         try {
             json = URLDecoder.decode(json);
         } catch (Exception e) {  
             System.out.println("Issue while decoding" +e.getMessage());
             return;  
         } 
-        // Checking if JSON String is correct.
-        System.out.println(json);
         Meal meal = new Gson().fromJson(json, Meal.class);
-        System.out.println(meal.getTitle());
+        System.out.println("meal " + meal.getTitle());
 
         // Put new Meal Entity to Datastore.
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        datastore.put(createMealEntity(meal));
-    }
+        datastore.put(DataConverter.createMealEntity(meal));
 
-    /**
-     * Creates an entity for Datastore with properties of class Meal.
-     * @param meal object of class Meal for which the entity is creating.
-     * @return new Entity object with necessary properties.
-     */
-    private Entity createMealEntity(Meal meal) {
-        Entity mealEntity = new Entity("Meal");
-        mealEntity.setProperty("id", meal.getId());
-        mealEntity.setProperty("title", meal.getTitle());
-        mealEntity.setProperty("description", meal.getDescription());
-        mealEntity.setProperty("ingredients", meal.getIngredients());
-        mealEntity.setProperty("type", meal.getType());
- 
-        return mealEntity;
+        response.setContentType("application/json;");
+        response.getWriter().print(json);
     }
 }
