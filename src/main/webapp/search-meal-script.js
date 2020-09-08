@@ -17,8 +17,6 @@ function searchMeal() {
   const urlParams = new URLSearchParams(queryString);
   const searchLine = urlParams.get("query") ?? "";
 
-  console.log(searchLine);
-
   fetch(`/meal?query=${searchLine}`)
     .then((response) => response.json())
     .then((dishes) => {
