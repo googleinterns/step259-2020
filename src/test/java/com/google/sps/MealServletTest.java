@@ -25,6 +25,7 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.gson.Gson;
 import com.google.sps.data.Meal;
+import com.google.sps.data.DataConverter;
 import com.google.sps.servlets.MealServlet;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,8 +72,8 @@ public class MealServletTest{
     @Test
     public void getMealByIdTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        ds.put(createMealEntity(MEAL_1));
-        ds.put(createMealEntity(MEAL_2));
+        ds.put(DataConverter.createMealEntity(MEAL_1));
+        ds.put(DataConverter.createMealEntity(MEAL_2));
         
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -108,8 +109,8 @@ public class MealServletTest{
     @Test
     public void getMealByIdForMultipleEntitiesTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        ds.put(createMealEntity(MEAL_1));
-        ds.put(createMealEntity(MEAL_1_DUPLICATE));
+        ds.put(DataConverter.createMealEntity(MEAL_1));
+        ds.put(DataConverter.createMealEntity(MEAL_1_DUPLICATE));
         
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -127,8 +128,8 @@ public class MealServletTest{
     @Test
     public void getEmptyMealByIdTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        ds.put(createMealEntity(MEAL_EMPTY));
-        ds.put(createMealEntity(MEAL_1));
+        ds.put(DataConverter.createMealEntity(MEAL_EMPTY));
+        ds.put(DataConverter.createMealEntity(MEAL_1));
 
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -146,8 +147,8 @@ public class MealServletTest{
     @Test
     public void getMealListTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        ds.put(createMealEntity(MEAL_1));
-        ds.put(createMealEntity(MEAL_2));
+        ds.put(DataConverter.createMealEntity(MEAL_1));
+        ds.put(DataConverter.createMealEntity(MEAL_2));
         
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -169,8 +170,8 @@ public class MealServletTest{
     @Test
     public void getMealListWithTwoKeyWordsTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        ds.put(createMealEntity(MEAL_1));
-        ds.put(createMealEntity(MEAL_2));
+        ds.put(DataConverter.createMealEntity(MEAL_1));
+        ds.put(DataConverter.createMealEntity(MEAL_2));
         
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -191,8 +192,8 @@ public class MealServletTest{
     @Test
     public void getMealListWithEmptyResultTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        ds.put(createMealEntity(MEAL_1));
-        ds.put(createMealEntity(MEAL_2));
+        ds.put(DataConverter.createMealEntity(MEAL_1));
+        ds.put(DataConverter.createMealEntity(MEAL_2));
         
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -212,7 +213,7 @@ public class MealServletTest{
     @Test
     public void getInvalidPathInfoTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        ds.put(createMealEntity(MEAL_1));
+        ds.put(DataConverter.createMealEntity(MEAL_1));
 
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -230,8 +231,8 @@ public class MealServletTest{
     @Test
     public void getIdOfSimilarTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        ds.put(createMealEntity(MEAL_1));
-        ds.put(createMealEntity(MEAL_2));
+        ds.put(DataConverter.createMealEntity(MEAL_1));
+        ds.put(DataConverter.createMealEntity(MEAL_2));
         
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -248,20 +249,4 @@ public class MealServletTest{
         String actual = response.getContentAsString();
         assertEquals(expected, actual);
     }
-
-    /**
-     * Creates an entity for Datastore with properties of class Meal.
-     * @param meal object of class Meal for which the entity is creating.
-     * @return new Entity object with necessary properties.
-     */
-    private Entity createMealEntity(Meal meal) {
-        Entity mealEntity = new Entity("Meal");
-        mealEntity.setProperty("id", meal.getId());
-        mealEntity.setProperty("title", meal.getTitle());
-        mealEntity.setProperty("description", meal.getDescription());
-        mealEntity.setProperty("ingredients", meal.getIngredients());
-        mealEntity.setProperty("type", meal.getType());
- 
-        return mealEntity;
-    }   
 }
