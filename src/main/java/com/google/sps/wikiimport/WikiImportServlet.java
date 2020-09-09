@@ -16,10 +16,14 @@ package com.google.sps.wikiimport;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.sps.data.Meal;
 import com.google.sps.data.DataConverter;
 import java.io.IOException;  
@@ -28,7 +32,9 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -38,23 +44,39 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/import")
 public class WikiImportServlet extends HttpServlet {
 
+    private static final Logger logger = Logger.getLogger(WikiImportServlet.class.getName());
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String json = IOUtils.toString(request.getReader());
         try {
-            json = URLDecoder.decode(json);
-        } catch (Exception e) {  
-            System.out.println("Issue while decoding" +e.getMessage());
-            return;  
-        } 
-        Meal meal = new Gson().fromJson(json, Meal.class);
-        System.out.println("meal " + meal.getTitle());
+            System.out.println(json);
+            Meal meal = new Gson().fromJson(json, Meal.class);
+            logger.info("Adding meal titled: " + meal.getTitle());
 
-        // Put new Meal Entity to Datastore.
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        datastore.put(DataConverter.createMealEntity(meal));
-
-        response.setContentType("application/json;");
-        response.getWriter().print(json);
+            // Put new Meal Entity to Datastore.
+            DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+            Query query = new Query("Meal").addSort("id", SortDirection.DESCENDING);
+            PreparedQuery entities = datastore.prepare(query);
+            Long id = 0L;
+            Iterator<Entity> iterator = entities.asIterator();
+            if (iterator.hasNext()) {
+                Entity entity = iterator.next();
+                id = (Long)entity.getProperty("id") + 1;
+            }
+            datastore.put(DataConverter.createMealEntity(
+                new Meal(
+                    id,
+                    meal.getTitle(),
+                    meal.getDescription(),
+                    meal.getIngredients(),
+                    meal.getType()
+                )
+            ));
+        } catch (JsonSyntaxException e) {
+            System.out.println(e);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
     }
 }
