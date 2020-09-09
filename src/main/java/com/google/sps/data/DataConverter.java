@@ -15,7 +15,11 @@
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.Entity;  
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.sps.data.Meal;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class DataConverter {
 
@@ -33,5 +37,27 @@ public final class DataConverter {
         mealEntity.setProperty("type", meal.getType());
 
         return mealEntity;
+    }
+
+    public static List<Meal> getDataFromDatastore(PreparedQuery query) {
+        List<Meal> result = new ArrayList<>();
+        for (Entity entity : query.asIterable()) {
+            try {
+                Long id = (Long)entity.getProperty("id");
+                String title = (String) entity.getProperty("title");
+                String description = (String) entity.getProperty("description");
+                ArrayList<String> ingredients = (ArrayList<String>) entity.getProperty("ingredients");
+                String type = (String) entity.getProperty("type");
+                if (id == null || title.isEmpty() || ingredients.isEmpty()) {
+                    continue;
+                }
+                Meal meal = new Meal(id, title, description, ingredients, type);
+                result.add(meal);
+            } catch(ClassCastException e) {
+                System.out.println(e);
+                continue;
+            }
+        }
+        return result;
     }
 } 
