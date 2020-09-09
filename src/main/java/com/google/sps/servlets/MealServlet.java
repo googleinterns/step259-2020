@@ -25,6 +25,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.sps.data.DataConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,7 +83,7 @@ public class MealServlet extends HttpServlet {
         Query query = new Query("Meal").addSort("id", SortDirection.ASCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
-        List<Meal> meals = getDataFromDatastore(results);
+        List<Meal> meals = DataConverter.getDataFromDatastore(results);
 
         // In case if search request is empty.
         if (params.isEmpty()) {
@@ -119,7 +120,7 @@ public class MealServlet extends HttpServlet {
         Query query = new Query("Meal").setFilter(propertyFilter);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
-        List<Meal> meals = getDataFromDatastore(results); 
+        List<Meal> meals = DataConverter.getDataFromDatastore(results); 
         
         if (meals.size() > 1) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -136,28 +137,6 @@ public class MealServlet extends HttpServlet {
         }
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
         return;
-    }
-
-    private List<Meal> getDataFromDatastore(PreparedQuery query) {
-        List<Meal> result = new ArrayList<>();
-        for (Entity entity : query.asIterable()) {
-            try {
-                Long id = (Long)entity.getProperty("id");
-                String title = (String) entity.getProperty("title");
-                String description = (String) entity.getProperty("description");
-                ArrayList<String> ingredients = (ArrayList<String>) entity.getProperty("ingredients");
-                String type = (String) entity.getProperty("type");
-                if (id == null || title.isEmpty() || ingredients.isEmpty()) {
-                    continue;
-                }
-                Meal meal = new Meal(id, title, description, ingredients, type);
-                result.add(meal);
-            } catch(ClassCastException e) {
-                System.out.println(e);
-                continue;
-            }
-        }
-        return result;
     }
 
     private void returnIdOfSimilar(HttpServletRequest request, HttpServletResponse response) throws IOException {

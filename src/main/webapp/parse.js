@@ -48,9 +48,11 @@ function sendData() {
                 const description = descriptionHTML.textContent;
                 const ingredients = Array.from(ingrHTML).map(el => el.innerText);
                 // Create JSON String for Meal object.
+                // By default id of object is 0, before putting object to Datastore
+                // id is initialized.
                 data = JSON.stringify(
                     {
-                        id: 24, // TODO: find the way to fill this field
+                        id: 0, 
                         title: title,
                         description: description,
                         type: "", // TODO: find the way to fill this field
