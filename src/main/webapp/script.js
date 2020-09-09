@@ -22,3 +22,9 @@ function createElementByTag(text, tag) {
 function capitalizeFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
+
+function getQueryParam(param) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get(param) ?? "";
+}

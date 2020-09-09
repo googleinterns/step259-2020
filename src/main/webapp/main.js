@@ -18,7 +18,7 @@ Vue.component("search-bar", {
   template: `
   <div id="search-bar">
     <div id="bar">
-      <input v-on:keyup.enter="submit" type="text" id="query" name="query" placeholder="Search..." />
+      <input v-on:keyup.enter="submit" type="text" id="query" name="query" placeholder="Search..." :value=query() />
       <div v-on:click="submit" type=submit id="search-icon"></div>
     </div>
   </div>
@@ -28,12 +28,21 @@ Vue.component("search-bar", {
       const searchLine = document.getElementById('query').value;
       window.location.replace(`search-results.html?query=${encodeURIComponent(searchLine)}`); 
     },
+    // `methods` can be used to render dynamic values in a template, based on the injected properties
+    // and the current component state.
+    // Since `query` is globally available, we can simply calculate it on every render.
+    // Note, that if we were to build a full Vue app, the we'd probably want to read `getQueryParam` once,
+    // somewhere at the root of our app, and simply pass it as a property to child components.
+    query: function() {
+      return getQueryParam("query");
+    },
   },
   data() {
     return {
       request: "",
     };
   },
+
 });
 
 const app = new Vue({
