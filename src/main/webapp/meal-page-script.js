@@ -46,11 +46,6 @@ function fetchMealInfo() {
     });
 }
 
-// solution from https://stackoverflow.com/questions/20174280/nodejs-convert-string-into-utf-8
-function encodingCheck(string) {
-  return JSON.parse(JSON.stringify(string));
-}
-
 function redirectToSimilar() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
