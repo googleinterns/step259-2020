@@ -22,6 +22,7 @@
 
 function sendData() {
     var url;
+    const type = document.getElementById("type").innerText ?? "";
     try {
         url = "https://en.wikibooks.org/w/api.php?" +
         new URLSearchParams({
@@ -55,7 +56,7 @@ function sendData() {
                         id: 0, 
                         title: title,
                         description: description,
-                        type: "", // TODO: find the way to fill this field
+                        type: type,
                         ingredients: ingredients
                     });
                 
