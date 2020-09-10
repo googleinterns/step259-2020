@@ -93,12 +93,26 @@ a:after {
   color: black;
 }
 
-#dishes-container {
+#dishes-container, #amount-container {
   overflow: scroll;
   display: inline-block;
   position: absolute;
-  top: 80px;
   bottom: 30px;
   right: 130px;
   left: 130px;
+}
+
+#dishes-container{
+  top: 110px;
+}
+
+#amount-container {
+  top: 80px;
+}
+
+#amount-block {
+  width: 70%;
+  padding: 5px 10px;
+  margin: 4px auto;
+  display:block;
 }

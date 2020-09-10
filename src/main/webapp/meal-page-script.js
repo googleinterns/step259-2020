@@ -29,13 +29,13 @@ function fetchMealInfo() {
     .then((meal) => {
       const { title, description, ingredients, type } = meal;
       const titleElement = document.getElementById("title");
-      titleElement.innerText = encodingCheck(title);
+      titleElement.innerText = encodingCheck(capitalizeFirst(title));
       const descriptionElement = document.getElementById("description");
       descriptionElement.innerText = encodingCheck(description);
       const ingredientsElement = document.getElementById("ingredients");
       for (const ingredient of ingredients) {
         ingredientsElement.appendChild(
-          createElementByTag(encodingCheck(ingredient), "li")
+          createElementByTag(encodingCheck(capitalizeFirst(ingredient)), "li")
         );
       }
       createMap(type);
