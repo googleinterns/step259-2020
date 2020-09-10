@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Meal page</title>
+    <link rel="stylesheet" href="meal-page-style.css"></link>
+    <link rel="stylesheet" href="search-meal-style.css"></link>
+    <link rel="stylesheet" href="style.css"></link>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0FR7vWT5PKPh-Sq95zAjcWXBFXRYl5xI&libraries=places"></script>
+    <script type="module" src="main.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="topnav">
+        <b> <a href="/index.html"> Meal Assistant</a> </b>
+        <div id="nav-search">
+          <search-bar></search-bar>
+        </div>
+      </nav>
+      <div id="background">
+        <h1 id="title">This page doesn't exist.</h1>
+        <div id="content">
+          <p id="description">
+              Try to go back to 
+              <a href="index.html">the main page</a>
+              or search bar on the top of the page.
+          </p>
+        </div>
+        </br>
+        <photo-copyright></photo-copyright>
+      </div>
+    </div>
+  </body>
+</html>
