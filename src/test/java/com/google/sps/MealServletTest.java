@@ -244,12 +244,11 @@ public class MealServletTest{
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         request.setPathInfo("/similar");
-        request.addParameter("id", "1");
+        request.addParameter("id", MEAL_1.getId().toString());
         servlet.doGet(request, response);
 
         // returnIdOfSimilar() should not return id of the current meal page
-        Long similarId = 2L;
-        
+        Long similarId = MEAL_2.getId();
         Gson gson = new Gson();
         String expected = gson.toJson(similarId);
         String actual = response.getContentAsString();
@@ -257,7 +256,7 @@ public class MealServletTest{
     }
 
     // Get a similar meal from Datastore
-    // Expected result: Long in JSON format with id of second meal.
+    // Expected result: Long in JSON format with id of second pizza.
     @Test
     public void returnSameTypeTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -274,7 +273,28 @@ public class MealServletTest{
 
         // returnIdOfSimilar() should  return id of the same category meel
         Long similarId = PIZZA_2.getId();
+        Gson gson = new Gson();
+        String expected = gson.toJson(similarId);
+        String actual = response.getContentAsString();
+        assertEquals(expected, actual);
+    }
+
+    // Get a similar meal from Datastore
+    // Expected result: Long in JSON format with id of same meal.
+    @Test
+    public void onlyOneEntity() throws IOException, ServletException {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        ds.put(createMealEntity(MEAL_1));
         
+        MealServlet servlet = new MealServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.setPathInfo("/similar");
+        request.addParameter("id", MEAL_1.getId().toString());
+        servlet.doGet(request, response);
+
+        // returnIdOfSimilar() should return id of the current meal page if there are no other meals
+        Long similarId = MEAL_1.getId();
         Gson gson = new Gson();
         String expected = gson.toJson(similarId);
         String actual = response.getContentAsString();
