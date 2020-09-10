@@ -48,10 +48,13 @@ import org.springframework.mock.web.MockHttpServletResponse;
 public class WikiImportTest{
     private final LocalServiceTestHelper helper =
         new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-    private static final Meal MEAL = new Meal(
+    private static final Meal MEAL_1 = new Meal(
         0L, "Breakfast Burrito", "Breakfast Burrito", new ArrayList<>(Arrays.asList("egg")), "");
-    private static final String VALID_JSON = new Gson().toJson(MEAL);
-    private static final String INVALID_JSON = VALID_JSON.replace("}", "");
+    private static final Meal MEAL_2 = new Meal(
+        0L, "Tea Eggs", "Tea eggs", new ArrayList<>(Arrays.asList("egg", "tea")), "tea");
+    private static final String VALID_JSON_1 = new Gson().toJson(MEAL_1);
+    private static final String VALID_JSON_2 = new Gson().toJson(MEAL_2);
+    private static final String INVALID_JSON = VALID_JSON_1.replace("}", "");
     
 
     @Before
@@ -67,21 +70,44 @@ public class WikiImportTest{
     // Put one object Meal to empty Datastore, created from valid JSON String.
     // Expected result: Datastore has one entity for this object Meal with id = 0L.
     @Test
-    public void putValidObjectTest() throws IOException, ServletException {
+    public void putValidObjectInEmptyDsTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         
         WikiImportServlet servlet = new WikiImportServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        request.setContent(VALID_JSON.getBytes());
+        request.setContent(VALID_JSON_1.getBytes());
         servlet.doPost(request, response);
         Long id = 0L;
         Filter propertyFilter = new FilterPredicate("id", FilterOperator.EQUAL, id);
         Query query = new Query("Meal").setFilter(propertyFilter);
         PreparedQuery results = ds.prepare(query);
         List<Meal> meals = DataConverter.getDataFromDatastore(results);
-        String expected = MEAL.getTitle();
+        String expected = MEAL_1.getTitle();
         String actual = meals.get(0).getTitle();
+
+        assertEquals(expected, actual);
+    }
+
+    // Put one object Meal to Datastore, where Entity with id=0L already exists.
+    // Expected result: Datastore puts new object with id=1L.
+    @Test
+    public void putValidObjectInNotEmptyDsTest() throws IOException, ServletException {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        ds.put(DataConverter.createMealEntity(MEAL_1));
+
+        WikiImportServlet servlet = new WikiImportServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.setContent(VALID_JSON_2.getBytes());
+        servlet.doPost(request, response);
+        Long id = 1L;
+        Filter propertyFilter = new FilterPredicate("id", FilterOperator.EQUAL, id);
+        Query query = new Query("Meal").setFilter(propertyFilter);
+        PreparedQuery results = ds.prepare(query);
+        List<Meal> meals = DataConverter.getDataFromDatastore(results);
+        Long expected = id;
+        Long actual = meals.get(0).getId();
 
         assertEquals(expected, actual);
     }

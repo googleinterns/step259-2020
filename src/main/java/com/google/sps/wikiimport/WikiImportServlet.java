@@ -50,7 +50,6 @@ public class WikiImportServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String json = IOUtils.toString(request.getReader());
         try {
-            System.out.println(json);
             Meal meal = new Gson().fromJson(json, Meal.class);
             logger.info("Adding meal titled: " + meal.getTitle());
 
@@ -74,7 +73,7 @@ public class WikiImportServlet extends HttpServlet {
                 )
             ));
         } catch (JsonSyntaxException e) {
-            System.out.println(e);
+            logger.info("An exception occurred: " + e);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
