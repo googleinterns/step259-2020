@@ -17,12 +17,16 @@ function fetchMealInfo() {
   // fetches form server by action meal/<id>
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const id = urlParams.get("id") ?? 0;
+  const id = urlParams.get("id");
+  if (id == null) {
+    window.location.replace("error.html");
+  }
 
   fetch(`/meal/${id}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
+        window.location.replace("error.html");
       }
       return response.json();
     })
@@ -41,8 +45,8 @@ function fetchMealInfo() {
       createMap(type);
     })
     .catch((error) => {
-      //TODO(sandatsian): display error page
       console.log(error);
+      window.location.replace("error.html");
     });
 }
 
