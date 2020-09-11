@@ -21,6 +21,8 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -140,26 +142,47 @@ public class MealServlet extends HttpServlet {
     }
 
     private void returnIdOfSimilar(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Fuction redirect to random page
-        // TODO(grenlayk): implement suggestions algorithm here for Product Alpha
+        // Fuction redirect to random page of the same type
         Long mealId = Long.parseLong(getParameter(request, "id", "0"));
-
-        Query query = new Query("Meal");
+        Meal meal = null;
+        Filter idFilter = new FilterPredicate("id", FilterOperator.EQUAL, mealId);
+        Query query = new Query("Meal").setFilter(idFilter);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        PreparedQuery results = datastore.prepare(query);
-        ArrayList<Long> idList = new ArrayList<>();
-        for (Entity entity : results.asIterable()) {
-            Long id = (Long)entity.getProperty("id");
-            if (id != null && !id.equals(mealId)) {
-                idList.add(id);
-            }
+        List<Meal> meals = getDataFromDatastore(datastore.prepare(query)); 
+        if (meals.size() > 1) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
+        } else if (meals.size() == 1) {
+            meal = (Meal)meals.get(0);
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
         }
+
+        Filter anotherIdFilter = new FilterPredicate("id", FilterOperator.NOT_EQUAL, meal.getId());
+        Filter typeFilter = new FilterPredicate("type", FilterOperator.EQUAL, meal.getType());
+        CompositeFilter sameTypeFilter =
+            CompositeFilterOperator.and(anotherIdFilter, typeFilter);
+        Query typeQuery = new Query("Meal").setFilter(sameTypeFilter);
+        Query idQuery = new Query("Meal").setFilter(anotherIdFilter);
+        List<Meal> sameTypeIdList = getDataFromDatastore(datastore.prepare(typeQuery));
+        List<Meal> idList = getDataFromDatastore(datastore.prepare(idQuery));
+
         Random rand = new Random(); 
-        int index = rand.nextInt(idList.size());
-        Long randomId = idList.get(index);
+        int index = 0;
+        Meal randomMeal = null;
+        if (sameTypeIdList.size() > 0) {
+            index = rand.nextInt(sameTypeIdList.size());
+            randomMeal = (Meal)sameTypeIdList.get(index);
+        } else if (idList.size() > 0) {
+            index = rand.nextInt(idList.size());
+            randomMeal = (Meal)idList.get(index);
+        } else {
+            randomMeal = meal;
+        }
         Gson gson = new Gson();
         response.setContentType("application/json;");
-        response.getWriter().print(gson.toJson(randomId));
+        response.getWriter().print(gson.toJson(randomMeal.getId()));
         return;
     }
 

@@ -55,6 +55,13 @@ public class MealServletTest{
     private static final Meal MEAL_2 = new Meal(
         2L, "Chocolate cake", "Chocolate cake with butter cream and strawberry.",
             new ArrayList<>(Arrays.asList("flour", "water", "butter", "strawberry")), "Dessert");
+    private static final Meal PIZZA_1 = new Meal(
+        3L, "Italian pizza", "Pizza with pineaple, sausage and tomato.",
+            new ArrayList<>(Arrays.asList("flour", "water", "sausage", "tomato", "pineaple", "cheese")), "Pizza");
+    private static final Meal PIZZA_2 = new Meal(
+        4L, "Seafood Pizza", "Just from the bottom of the ocean...",
+            new ArrayList<>(Arrays.asList("flour", "salt", "butter", "water", "oil", "shrimp", "tuna", "onion", "ctabstick",
+                "scallops", "fish sticks", "garlic", "tomato sauce")), "Pizza");
 
 
     @Before
@@ -229,7 +236,7 @@ public class MealServletTest{
     // Get a similar meal from Datastore
     // Expected result: Long in JSON format with id of second meal.
     @Test
-    public void getIdOfSimilarTest() throws IOException, ServletException {
+    public void noSameTypeTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         ds.put(DataConverter.createMealEntity(MEAL_1));
         ds.put(DataConverter.createMealEntity(MEAL_2));
@@ -238,12 +245,57 @@ public class MealServletTest{
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         request.setPathInfo("/similar");
-        request.addParameter("id", "1");
+        request.addParameter("id", MEAL_1.getId().toString());
         servlet.doGet(request, response);
 
         // returnIdOfSimilar() should not return id of the current meal page
-        Long similarId = 2L;
+        Long similarId = MEAL_2.getId();
+        Gson gson = new Gson();
+        String expected = gson.toJson(similarId);
+        String actual = response.getContentAsString();
+        assertEquals(expected, actual);
+    }
+
+    // Get a similar meal from Datastore
+    // Expected result: Long in JSON format with id of second pizza.
+    @Test
+    public void returnSameTypeTest() throws IOException, ServletException {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        ds.put(createMealEntity(PIZZA_1));
+        ds.put(createMealEntity(PIZZA_2));
+        ds.put(createMealEntity(MEAL_1));
         
+        MealServlet servlet = new MealServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.setPathInfo("/similar");
+        request.addParameter("id", PIZZA_1.getId().toString());
+        servlet.doGet(request, response);
+
+        // returnIdOfSimilar() should  return id of the same category meel
+        Long similarId = PIZZA_2.getId();
+        Gson gson = new Gson();
+        String expected = gson.toJson(similarId);
+        String actual = response.getContentAsString();
+        assertEquals(expected, actual);
+    }
+
+    // Get a similar meal from Datastore
+    // Expected result: Long in JSON format with id of same meal.
+    @Test
+    public void onlyOneEntity() throws IOException, ServletException {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        ds.put(createMealEntity(MEAL_1));
+        
+        MealServlet servlet = new MealServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.setPathInfo("/similar");
+        request.addParameter("id", MEAL_1.getId().toString());
+        servlet.doGet(request, response);
+
+        // returnIdOfSimilar() should return id of the current meal page if there are no other meals
+        Long similarId = MEAL_1.getId();
         Gson gson = new Gson();
         String expected = gson.toJson(similarId);
         String actual = response.getContentAsString();
