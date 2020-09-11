@@ -22,3 +22,8 @@ function createElementByTag(text, tag) {
 function capitalizeFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
+
+// solution from https://stackoverflow.com/questions/20174280/nodejs-convert-string-into-utf-8
+function encodingCheck(string) {
+  return JSON.parse(JSON.stringify(string));
+}
