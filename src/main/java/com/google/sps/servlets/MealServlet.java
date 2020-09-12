@@ -148,11 +148,11 @@ public class MealServlet extends HttpServlet {
         Filter idFilter = new FilterPredicate("id", FilterOperator.EQUAL, mealId);
         Query query = new Query("Meal").setFilter(idFilter);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        List<Meal> meals = getDataFromDatastore(datastore.prepare(query)); 
+        List<Meal> meals = DataConverter.getDataFromDatastore(datastore.prepare(query)); 
         if (meals.size() > 1) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
-        } else if (meals.size() == 1) {
+        } else if (!meals.isEmpty()) {
             meal = (Meal)meals.get(0);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -161,29 +161,30 @@ public class MealServlet extends HttpServlet {
 
         Filter anotherIdFilter = new FilterPredicate("id", FilterOperator.NOT_EQUAL, meal.getId());
         Filter typeFilter = new FilterPredicate("type", FilterOperator.EQUAL, meal.getType());
-        CompositeFilter sameTypeFilter =
-            CompositeFilterOperator.and(anotherIdFilter, typeFilter);
+        CompositeFilter sameTypeFilter = CompositeFilterOperator.and(anotherIdFilter, typeFilter);
         Query typeQuery = new Query("Meal").setFilter(sameTypeFilter);
-        Query idQuery = new Query("Meal").setFilter(anotherIdFilter);
-        List<Meal> sameTypeIdList = getDataFromDatastore(datastore.prepare(typeQuery));
-        List<Meal> idList = getDataFromDatastore(datastore.prepare(idQuery));
+        List<Meal> sameTypeList = DataConverter.getDataFromDatastore(datastore.prepare(typeQuery));
 
-        Random rand = new Random(); 
-        int index = 0;
-        Meal randomMeal = null;
-        if (sameTypeIdList.size() > 0) {
-            index = rand.nextInt(sameTypeIdList.size());
-            randomMeal = (Meal)sameTypeIdList.get(index);
-        } else if (idList.size() > 0) {
-            index = rand.nextInt(idList.size());
-            randomMeal = (Meal)idList.get(index);
+        Meal randomMeal = meal;
+        if (!sameTypeList.isEmpty()) {
+            randomMeal = pickRandomMeal(sameTypeList);
         } else {
-            randomMeal = meal;
+            Query idQuery = new Query("Meal").setFilter(anotherIdFilter);
+            List<Meal> idList = DataConverter.getDataFromDatastore(datastore.prepare(idQuery));
+            if (!idList.isEmpty()) {
+                randomMeal = pickRandomMeal(idList);
+            }
         }
         Gson gson = new Gson();
         response.setContentType("application/json;");
         response.getWriter().print(gson.toJson(randomMeal.getId()));
         return;
+    }
+
+    private Meal pickRandomMeal(List<Meal> mealList) {
+        Random rand = new Random(); 
+        int index = rand.nextInt(mealList.size());
+        return (Meal)mealList.get(index);
     }
 
     private Boolean isResultOfSearch(Meal meal, List<String> params) {

@@ -261,9 +261,9 @@ public class MealServletTest{
     @Test
     public void returnSameTypeTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        ds.put(createMealEntity(PIZZA_1));
-        ds.put(createMealEntity(PIZZA_2));
-        ds.put(createMealEntity(MEAL_1));
+        ds.put(DataConverter.createMealEntity(PIZZA_1));
+        ds.put(DataConverter.createMealEntity(PIZZA_2));
+        ds.put(DataConverter.createMealEntity(MEAL_1));
         
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -285,7 +285,7 @@ public class MealServletTest{
     @Test
     public void onlyOneEntity() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        ds.put(createMealEntity(MEAL_1));
+        ds.put(DataConverter.createMealEntity(MEAL_1));
         
         MealServlet servlet = new MealServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
