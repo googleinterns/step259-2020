@@ -22,6 +22,7 @@
 
 function sendData() {
     var url;
+    const type = document.getElementById("type").innerText ?? "";
     try {
         url = "https://en.wikibooks.org/w/api.php?" +
         new URLSearchParams({
@@ -44,7 +45,7 @@ function sendData() {
                 const ingrHTML = document.getElementsByTagName("ul").item(0).children;
                 const list = document.getElementsByClassName("mw-parser-output")[0];
                 const descriptionHTML = list.getElementsByTagName("p")[1];
-                const title = jsonData.parse.title.replace("Cookbook:", "");
+                const title = jsonData.parse.title.replace("Cookbook:", "").toLowerCase();
                 const description = descriptionHTML.textContent;
                 const ingredients = Array.from(ingrHTML).map(el => el.innerText);
                 // Create JSON String for Meal object.
@@ -55,7 +56,7 @@ function sendData() {
                         id: 0, 
                         title: title,
                         description: description,
-                        type: "", // TODO: find the way to fill this field
+                        type: type,
                         ingredients: ingredients
                     });
                 

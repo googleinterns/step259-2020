@@ -46,7 +46,7 @@ function createMealElement(dish) {
   const aElement = document.createElement("a");
   aElement.setAttribute("href", `meal.html?id=${id}`);
   const insideDivElement = document.createElement("div");
-  insideDivElement.appendChild(createElementByTag(title, "b"));
+  insideDivElement.appendChild(createElementByTag(capitalizeFirst(title), "b"));
   insideDivElement.appendChild(createElementByTag(description, "p"));
   aElement.appendChild(insideDivElement);
   return aElement;
