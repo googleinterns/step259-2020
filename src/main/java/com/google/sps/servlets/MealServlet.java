@@ -31,6 +31,7 @@ import com.google.sps.data.DataConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -123,7 +124,19 @@ public class MealServlet extends HttpServlet {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
         List<Meal> meals = DataConverter.getDataFromDatastore(results); 
-        
+
+        // hack - return the same meal in all cases; checks how the behaviour changes after removing the semicolon from the content type
+        Meal MEAL_1 = new Meal(
+        1L, "Fried potato", "Fried potato with mushrooms and onion.",
+            new ArrayList<>(Arrays.asList("Habañero", "Habañero", "oil")), "Main");
+                
+                String gson = new Gson().toJson(MEAL_1);
+                response.setContentType("application/json");  // This works fine
+                //response.setContentType("application/json;");  // This variant causes invalid characters
+                response.getWriter().print(gson);
+                return;
+        //
+        /*
         if (meals.size() > 1) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
@@ -139,6 +152,7 @@ public class MealServlet extends HttpServlet {
         }
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
         return;
+        */
     }
 
     private void returnIdOfSimilar(HttpServletRequest request, HttpServletResponse response) throws IOException {

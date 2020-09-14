@@ -73,7 +73,7 @@ public class MealServletTest{
     public void tearDown() {
         helper.tearDown();
     }
-
+/*
     // Get one of the existing objects Meal by id.
     // Expected result: JSON String with one object Meal.
     @Test
@@ -301,4 +301,5 @@ public class MealServletTest{
         String actual = response.getContentAsString();
         assertEquals(expected, actual);
     }
+    */
 }
