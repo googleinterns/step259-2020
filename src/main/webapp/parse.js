@@ -22,7 +22,9 @@
 
 function sendData() {
     var url;
-    const type = document.getElementById("type").innerText ?? "";
+    // Get type of meal.
+    var typeSelector = document.getElementById("type");
+    var type = typeSelector.options[typeSelector.selectedIndex].innerText ?? "";
     try {
         url = "https://en.wikibooks.org/w/api.php?" +
         new URLSearchParams({
@@ -44,10 +46,13 @@ function sendData() {
             try {
                 const ingrHTML = document.getElementsByTagName("ul").item(0).children;
                 const list = document.getElementsByClassName("mw-parser-output")[0];
-                const descriptionHTML = list.getElementsByTagName("p")[1];
-                const title = jsonData.parse.title.replace("Cookbook:", "").toLowerCase();
-                const description = descriptionHTML.textContent;
                 const ingredients = Array.from(ingrHTML).map(el => el.innerText);
+                const descriptionHTML = list.getElementsByTagName("p")[1];
+                var description = "";
+                if (descriptionHTML != null) {
+                    description = descriptionHTML.textContent ?? "";
+                }
+                const title = jsonData.parse.title.replace("Cookbook:", "").toLowerCase();
                 // Create JSON String for Meal object.
                 // By default id of object is 0, before putting object to Datastore
                 // id is initialized.
