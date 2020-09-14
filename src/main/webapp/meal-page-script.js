@@ -39,7 +39,7 @@ function fetchMealInfo() {
       const ingredientsElement = document.getElementById("ingredients");
       for (const ingredient of ingredients) {
         ingredientsElement.appendChild(
-          createElementByTag(encodingCheck(capitalizeFirst(ingredient)), "li")
+          createElementByTag(encodingCheck(ingredient), "li")
         );
       }
       createMap(type);
