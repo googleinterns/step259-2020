@@ -33,7 +33,7 @@ function fetchMealInfo() {
     .then((meal) => {
       const { title, description, ingredients, type } = meal;
       const titleElement = document.getElementById("title");
-      titleElement.innerText = encodingCheck(capitalizeFirst(title));
+      titleElement.innerText = encodingCheck(capitalizeItems(title));
       const descriptionElement = document.getElementById("description");
       descriptionElement.innerText = encodingCheck(description);
       const ingredientsElement = document.getElementById("ingredients");
