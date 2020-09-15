@@ -1,0 +1,6 @@
+indexes:
+
+- kind: Meal
+  properties:
+  - name: type
+  - name: id
