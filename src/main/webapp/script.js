@@ -30,3 +30,9 @@ function capitalizeItems(string) {
 function encodingCheck(string) {
   return JSON.parse(JSON.stringify(string));
 }
+
+function getQueryParam(param) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get(param) ?? "";
+} 
