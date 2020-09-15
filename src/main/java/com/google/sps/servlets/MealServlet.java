@@ -89,7 +89,7 @@ public class MealServlet extends HttpServlet {
 
         // In case if search request is empty.
         if (params.isEmpty()) {
-            response.setContentType("application/json;");
+            response.setContentType("application/json");
             response.getWriter().print(new Gson().toJson(meals));
             return;
         }
@@ -102,7 +102,7 @@ public class MealServlet extends HttpServlet {
                 searchedMeal.add(meal);
             }
         }
-        response.setContentType("application/json;");
+        response.setContentType("application/json");
         response.getWriter().print(new Gson().toJson(searchedMeal));
         return;
     }
@@ -132,7 +132,7 @@ public class MealServlet extends HttpServlet {
             Meal meal = (Meal)meals.get(0);
             if (meal != null) {
                 String gson = new Gson().toJson(meal);
-                response.setContentType("application/json;");
+                response.setContentType("application/json");
                 response.getWriter().print(gson);
                 return;
             }
@@ -176,7 +176,7 @@ public class MealServlet extends HttpServlet {
             }
         }
         Gson gson = new Gson();
-        response.setContentType("application/json;");
+        response.setContentType("application/json");
         response.getWriter().print(gson.toJson(randomMeal.getId()));
         return;
     }
