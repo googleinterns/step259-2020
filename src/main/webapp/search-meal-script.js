@@ -13,9 +13,8 @@
 // limitations under the License.
 
 function searchMeal() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const searchLine = urlParams.get("query") ?? "";
+
+  const searchLine = getQueryParam("query");
 
   fetch(`/meal?query=${searchLine}`)
     .then((response) => response.json())
@@ -29,8 +28,6 @@ function searchMeal() {
       Object.entries(dishes).forEach((dish) => {
         container.appendChild(createMealBlock(dish[1]));
       });
-      const inputElem = document.getElementById('query');
-      inputElem.setAttribute("value", searchLine);
     });
 }
 
@@ -46,7 +43,7 @@ function createMealElement(dish) {
   const aElement = document.createElement("a");
   aElement.setAttribute("href", `meal.html?id=${id}`);
   const insideDivElement = document.createElement("div");
-  insideDivElement.appendChild(createElementByTag(capitalizeFirst(title), "b"));
+  insideDivElement.appendChild(createElementByTag(capitalizeItems(title), "b"));
   insideDivElement.appendChild(createElementByTag(description, "p"));
   aElement.appendChild(insideDivElement);
   return aElement;

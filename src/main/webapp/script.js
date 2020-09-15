@@ -19,11 +19,20 @@ function createElementByTag(text, tag) {
   return element;
 }
 
-function capitalizeFirst(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+function capitalizeItems(string) {
+  return string
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
 // solution from https://stackoverflow.com/questions/20174280/nodejs-convert-string-into-utf-8
 function encodingCheck(string) {
   return JSON.parse(JSON.stringify(string));
 }
+
+function getQueryParam(param) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get(param) ?? "";
+} 
