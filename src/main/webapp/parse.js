@@ -47,8 +47,8 @@ function sendData() {
                 const ingrHtml = document.getElementsByTagName("ul").item(0).children;
                 const list = document.getElementsByClassName("mw-parser-output")[0];
                 const ingredients = Array.from(ingrHtml).map(el => el.innerText);
-                const descriptionHtml = list.getElementsByTagName("p")[1];
-                const description = descriptionHTML == null ? "" : descriptionHtml.textContent ?? "";
+                const descriptionHTML = list.getElementsByTagName("p")[1];
+                const description = descriptionHTML == null ? "" : descriptionHTML.textContent ?? "";
                 const title = jsonData.parse.title.replace("Cookbook:", "").toLowerCase();
                 // Create JSON String for Meal object.
                 // By default id of object is 0, before putting object to Datastore
