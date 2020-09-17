@@ -13,9 +13,7 @@
 // limitations under the License.
 
 function searchMeal() {
-
   const searchLine = getQueryParam("query");
-
   fetch(`/meal?query=${searchLine}`)
     .then((response) => response.json())
     .then((dishes) => {
