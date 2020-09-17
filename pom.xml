@@ -5,7 +5,7 @@
 
   <groupId>com.google.sps</groupId>
   <artifactId>step-meal-assistant</artifactId>
-  <version>1</version>
+  <version>0.0.1</version>
   <packaging>war</packaging>
 
   <properties>
@@ -101,7 +101,7 @@
         <version>2.2.0</version>
         <configuration>
           <deploy.projectId>polinasand-step-2020</deploy.projectId>
-          <deploy.version>1</deploy.version>
+          <deploy.version>0-0-1</deploy.version>
         </configuration>
       </plugin>
     </plugins>
