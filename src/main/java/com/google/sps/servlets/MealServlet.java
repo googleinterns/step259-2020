@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -97,8 +98,24 @@ public class MealServlet extends HttpServlet {
         // Every object Meal adds if it contains at least one keyword in at least one field 
         // (type, title, description, ingredients).
         List<Meal> searchedMeal = new ArrayList<>();
+        HashMap<Integer, List<Meal>> sortedMeal = new HashMap<>();
         for (Meal meal : meals) {
-            if (isResultOfSearch(meal, params)) {
+            int count = isResultOfSearch(meal, params);
+            if (count > 0) {
+                List<Meal> list = new ArrayList<>();
+                if (sortedMeal.get(count) != null) {
+                    list = sortedMeal.get(count);
+                }
+                list.add(meal);
+                sortedMeal.put(count, list);
+            }
+        }
+        for (int i = params.size(); i > 0; i --) {
+            if (sortedMeal.get(i) == null) {
+                continue;
+            }
+            List<Meal> list = sortedMeal.get(i);
+            for (Meal meal : list) {
                 searchedMeal.add(meal);
             }
         }
@@ -187,24 +204,23 @@ public class MealServlet extends HttpServlet {
         return (Meal)mealList.get(index);
     }
 
-    private Boolean isResultOfSearch(Meal meal, List<String> params) {
+    private int isResultOfSearch(Meal meal, List<String> params) {
+        int counter = 0;
         for (String param : params) {
-            if (meal.getTitle().contains(param)) {
-                return true;
+            if (meal.getTitle().contains(param) ||
+                meal.getDescription().contains(param) ||
+                meal.getType().contains(param)) {
+                counter ++;
+                break;
             } 
-            if (meal.getDescription().contains(param)) {
-                return true;
-            } 
-            if (meal.getType().contains(param)) {
-                return true;
-            }
             for (String ingredient : meal.getIngredients()) {
                 if (ingredient.contains(param)) {
-                    return true;
+                    counter ++;
+                    break;
                 }
             }
         }
-        return false;
+        return counter;
     }
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
