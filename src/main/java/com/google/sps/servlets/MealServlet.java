@@ -100,23 +100,22 @@ public class MealServlet extends HttpServlet {
         List<Meal> searchedMeal = new ArrayList<>();
         HashMap<Integer, List<Meal>> sortedMeal = new HashMap<>();
         for (Meal meal : meals) {
-            int count = isResultOfSearch(meal, params);
-            if (count > 0) {
+            int frequence = getFrequence(meal, params);
+            if (frequence > 0) {
                 List<Meal> list = new ArrayList<>();
-                if (sortedMeal.get(count) != null) {
-                    list = sortedMeal.get(count);
+                if (sortedMeal.get(frequence) != null) {
+                    list = sortedMeal.get(frequence);
                 }
                 list.add(meal);
-                sortedMeal.put(count, list);
+                sortedMeal.put(frequence, list);
             }
         }
         for (int i = params.size(); i > 0; i --) {
-            if (sortedMeal.get(i) == null) {
-                continue;
-            }
             List<Meal> list = sortedMeal.get(i);
-            for (Meal meal : list) {
-                searchedMeal.add(meal);
+            if (list != null) {
+                for (Meal meal : list) {
+                    searchedMeal.add(meal);
+                }
             }
         }
         response.setContentType("application/json");
@@ -204,23 +203,23 @@ public class MealServlet extends HttpServlet {
         return (Meal)mealList.get(index);
     }
 
-    private int isResultOfSearch(Meal meal, List<String> params) {
-        int counter = 0;
+    private int getFrequence(Meal meal, List<String> params) {
+        int frequence = 0;
         for (String param : params) {
             if (meal.getTitle().contains(param) ||
                 meal.getDescription().contains(param) ||
                 meal.getType().contains(param)) {
-                counter ++;
+                frequence++;
                 break;
             } 
             for (String ingredient : meal.getIngredients()) {
                 if (ingredient.contains(param)) {
-                    counter ++;
+                    frequence++;
                     break;
                 }
             }
         }
-        return counter;
+        return frequence;
     }
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
