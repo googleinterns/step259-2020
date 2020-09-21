@@ -100,14 +100,14 @@ public class MealServlet extends HttpServlet {
         List<Meal> searchedMeal = new ArrayList<>();
         HashMap<Integer, List<Meal>> sortedMeal = new HashMap<>();
         for (Meal meal : meals) {
-            int frequence = getFrequence(meal, params);
-            if (frequence > 0) {
+            int frequency = getFrequency(meal, params);
+            if (frequency > 0) {
                 List<Meal> list = new ArrayList<>();
-                if (sortedMeal.get(frequence) != null) {
-                    list = sortedMeal.get(frequence);
+                if (sortedMeal.get(frequency) != null) {
+                    list = sortedMeal.get(frequency);
                 }
                 list.add(meal);
-                sortedMeal.put(frequence, list);
+                sortedMeal.put(frequency, list);
             }
         }
         for (int i = params.size(); i > 0; i --) {
@@ -203,23 +203,23 @@ public class MealServlet extends HttpServlet {
         return (Meal)mealList.get(index);
     }
 
-    private int getFrequence(Meal meal, List<String> params) {
-        int frequence = 0;
+    private int getFrequency(Meal meal, List<String> params) {
+        int frequency = 0;
         for (String param : params) {
             if (meal.getTitle().contains(param) ||
                 meal.getDescription().contains(param) ||
                 meal.getType().contains(param)) {
-                frequence++;
+                frequency++;
                 break;
             } 
             for (String ingredient : meal.getIngredients()) {
                 if (ingredient.contains(param)) {
-                    frequence++;
+                    frequency++;
                     break;
                 }
             }
         }
-        return frequence;
+        return frequency;
     }
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
