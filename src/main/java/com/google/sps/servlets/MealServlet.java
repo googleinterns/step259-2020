@@ -32,9 +32,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -98,24 +98,19 @@ public class MealServlet extends HttpServlet {
         // Every object Meal adds if it contains at least one keyword in at least one field 
         // (type, title, description, ingredients).
         List<Meal> searchedMeal = new ArrayList<>();
-        HashMap<Integer, List<Meal>> sortedMeal = new HashMap<>();
+        TreeMap<Integer, List<Meal>> sortedMeal = new TreeMap<>();
         for (Meal meal : meals) {
             int frequency = getFrequency(meal, params);
             if (frequency > 0) {
-                List<Meal> list = new ArrayList<>();
-                if (sortedMeal.get(frequency) != null) {
-                    list = sortedMeal.get(frequency);
-                }
+                sortedMeal.putIfAbsent(frequency, new ArrayList<>());
+                List<Meal> list = sortedMeal.get(frequency);
                 list.add(meal);
-                sortedMeal.put(frequency, list);
             }
         }
-        for (int i = params.size(); i > 0; i --) {
-            List<Meal> list = sortedMeal.get(i);
+        for (int key : sortedMeal.descendingKeySet()) {
+            List<Meal> list = sortedMeal.get(key);
             if (list != null) {
-                for (Meal meal : list) {
-                    searchedMeal.add(meal);
-                }
+                searchedMeal.addAll(list);
             }
         }
         response.setContentType("application/json");
@@ -203,6 +198,12 @@ public class MealServlet extends HttpServlet {
         return (Meal)mealList.get(index);
     }
 
+    /**
+     * Counts the number of keywords that are matching in recipe.
+     * @param meal object of class Meal which is checking.
+     * @param params list of strings with keywords, that describe search request.
+     * @return amount of occurrences of keywords from params in this meal.
+     */
     private int getFrequency(Meal meal, List<String> params) {
         int frequency = 0;
         for (String param : params) {
@@ -210,17 +211,18 @@ public class MealServlet extends HttpServlet {
                 meal.getDescription().contains(param) ||
                 meal.getType().contains(param)) {
                 frequency++;
-                break;
+                continue;
             } 
             for (String ingredient : meal.getIngredients()) {
                 if (ingredient.contains(param)) {
                     frequency++;
-                    break;
+                    continue;
                 }
             }
         }
         return frequency;
     }
+
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
         if (value == null) {
