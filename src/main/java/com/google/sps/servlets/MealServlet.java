@@ -100,7 +100,7 @@ public class MealServlet extends HttpServlet {
         List<Meal> searchedMeal = new ArrayList<>();
         TreeMap<Integer, List<Meal>> sortedMeal = new TreeMap<>();
         for (Meal meal : meals) {
-            int frequency = getFrequency(meal, params);
+            int frequency = meal.getFrequency(params);
             if (frequency > 0) {
                 sortedMeal.putIfAbsent(frequency, new ArrayList<>());
                 List<Meal> list = sortedMeal.get(frequency);
@@ -196,31 +196,6 @@ public class MealServlet extends HttpServlet {
         Random rand = new Random(); 
         int index = rand.nextInt(mealList.size());
         return (Meal)mealList.get(index);
-    }
-
-    /**
-     * Counts the number of keywords that are matching in recipe.
-     * @param meal object of class Meal which is checking.
-     * @param params list of strings with keywords, that describe search request.
-     * @return amount of occurrences of keywords from params in this meal.
-     */
-    private int getFrequency(Meal meal, List<String> params) {
-        int frequency = 0;
-        for (String param : params) {
-            if (meal.getTitle().contains(param) ||
-                meal.getDescription().contains(param) ||
-                meal.getType().contains(param)) {
-                frequency++;
-                continue;
-            } 
-            for (String ingredient : meal.getIngredients()) {
-                if (ingredient.contains(param)) {
-                    frequency++;
-                    continue;
-                }
-            }
-        }
-        return frequency;
     }
 
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {

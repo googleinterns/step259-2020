@@ -15,6 +15,7 @@
 package com.google.sps.data;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Meal {
     private final Long id;
@@ -49,5 +50,29 @@ public class Meal {
 
     public String getType() {
         return this.type;
+    }
+
+    /**
+     * Counts the number of keywords that are matching in recipe.
+     * @param params list of strings with keywords, that describe search request.
+     * @return amount of occurrences of keywords from params in this meal.
+     */
+    public int getFrequency(List<String> params) {
+        int frequency = 0;
+        for (String param : params) {
+            if (title.contains(param) ||
+                description.contains(param) ||
+                type.contains(param)) {
+                frequency++;
+                continue;
+            } 
+            for (String ingredient : ingredients) {
+                if (ingredient.contains(param)) {
+                    frequency++;
+                    continue;
+                }
+            }
+        }
+        return frequency;
     }
 }
