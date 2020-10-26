@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -97,9 +98,19 @@ public class MealServlet extends HttpServlet {
         // Every object Meal adds if it contains at least one keyword in at least one field 
         // (type, title, description, ingredients).
         List<Meal> searchedMeal = new ArrayList<>();
+        TreeMap<Integer, List<Meal>> sortedMeal = new TreeMap<>();
         for (Meal meal : meals) {
-            if (isResultOfSearch(meal, params)) {
-                searchedMeal.add(meal);
+            int frequency = meal.getFrequency(params);
+            if (frequency > 0) {
+                sortedMeal.putIfAbsent(frequency, new ArrayList<>());
+                List<Meal> list = sortedMeal.get(frequency);
+                list.add(meal);
+            }
+        }
+        for (int key : sortedMeal.descendingKeySet()) {
+            List<Meal> list = sortedMeal.get(key);
+            if (list != null) {
+                searchedMeal.addAll(list);
             }
         }
         response.setContentType("application/json");
@@ -187,25 +198,6 @@ public class MealServlet extends HttpServlet {
         return (Meal)mealList.get(index);
     }
 
-    private Boolean isResultOfSearch(Meal meal, List<String> params) {
-        for (String param : params) {
-            if (meal.getTitle().contains(param)) {
-                return true;
-            } 
-            if (meal.getDescription().contains(param)) {
-                return true;
-            } 
-            if (meal.getType().contains(param)) {
-                return true;
-            }
-            for (String ingredient : meal.getIngredients()) {
-                if (ingredient.contains(param)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
         if (value == null) {

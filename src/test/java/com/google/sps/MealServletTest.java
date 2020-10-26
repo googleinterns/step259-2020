@@ -173,10 +173,11 @@ public class MealServletTest{
 
     // Get a list of objects Meal from datastore by search request "potato onion".
     // (Check if meal that has both occurrences of searching keywords would be added only once).
-    // Expected result: a JSON String of list with one object MEAL_1.
+    // Expected result: a JSON String of list with objects in order: MEAL_1, PIZZA_2.
     @Test
     public void getMealListWithTwoKeyWordsTest() throws IOException, ServletException {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        ds.put(DataConverter.createMealEntity(PIZZA_2));
         ds.put(DataConverter.createMealEntity(MEAL_1));
         ds.put(DataConverter.createMealEntity(MEAL_2));
         
@@ -188,6 +189,7 @@ public class MealServletTest{
 
         List<Meal> meals = new ArrayList<>();
         meals.add(MEAL_1);
+        meals.add(PIZZA_2);
         Gson gson = new Gson();
         String expected = gson.toJson(meals);
         String actual = response.getContentAsString().trim();
