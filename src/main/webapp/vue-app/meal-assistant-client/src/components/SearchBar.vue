@@ -25,9 +25,8 @@ export default {
   methods: {
     submit: function () {
       const searchLine = document.getElementById("query").value;
-      // TODO: refactor to use vue-router compatible navigation
-      window.location.replace(
-        `search-results.html?query=${encodeURIComponent(searchLine)}`
+      this.$router.push(
+        `search-results?query=${encodeURIComponent(searchLine)}`
       );
     },
     // `methods` can be used to render dynamic values in a template, based on the injected properties

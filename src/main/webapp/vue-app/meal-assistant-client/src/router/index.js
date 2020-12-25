@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import SearchResults from "../views/SearchResults.vue";
 
 Vue.use(VueRouter);
 
@@ -10,6 +11,11 @@ Vue.use(VueRouter);
 // See https://stackoverflow.com/a/10473302/7742560 for a brief explanation of Client Side Routing.
 // TODO: define remaining routes.
 const routes = [
+  {
+    path: "/search-results/",
+    name: "SearchResults",
+    component: SearchResults,
+  },
   {
     path: "/",
     name: "Home",
