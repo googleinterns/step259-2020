@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Alias the service.
+// Use the `RealMealService` to actually query the backend.
+const service = FakeMealService;
+
 function fetchMealInfo() {
   // use mapping /meal.html?id=<id>
   // fetches form server by action meal/<id>
@@ -22,14 +26,7 @@ function fetchMealInfo() {
     window.location.replace("error.html");
   }
 
-  fetch(`/meal/${id}`)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-        window.location.replace("error.html");
-      }
-      return response.json();
-    })
+  service.getOne(id)
     .then((meal) => {
       const { title, description, ingredients, type } = meal;
       const titleElement = document.getElementById("title");
@@ -54,8 +51,7 @@ function redirectToSimilar() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const pageId = urlParams.get("id") ?? 0;
-  fetch(`/meal/similar?id=${pageId.toString()}`)
-    .then((response) => response.json())
+  service.getSimilar(pageId.toString())
     .then((id) => {
       const url = `/meal.html?id=${id.toString()}`;
       window.location.replace(url);
