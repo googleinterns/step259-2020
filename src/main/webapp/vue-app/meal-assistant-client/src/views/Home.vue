@@ -1,5 +1,5 @@
 <template>
-  <div class="landing-page">
+  <div class="home">
     <nav class="topnav">
       <b> <a href="/"> Meal Assistant</a> </b>
     </nav>
@@ -16,24 +16,15 @@
 </template>
 
 <script>
-import SearchBar from "./SearchBar.vue";
-import PhotoCopyright from "./PhotoCopyright.vue";
+// `@` is an alias for "src/" (aka the main app directory).
+import SearchBar from "@/components/SearchBar.vue";
+import PhotoCopyright from "@/components/PhotoCopyright.vue";
 
 export default {
-  name: "LandingPage",
+  name: "Home",
   components: {
     SearchBar,
     PhotoCopyright,
   },
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-div {
-  margin: 40px;
-}
-a {
-  color: #42b983;
-}
-</style>

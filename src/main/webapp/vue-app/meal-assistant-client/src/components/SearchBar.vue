@@ -25,6 +25,7 @@ export default {
   methods: {
     submit: function () {
       const searchLine = document.getElementById("query").value;
+      // TODO: refactor to use vue-router compatible navigation
       window.location.replace(
         `search-results.html?query=${encodeURIComponent(searchLine)}`
       );
