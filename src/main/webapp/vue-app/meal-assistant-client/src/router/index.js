@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import SearchResults from "../views/SearchResults.vue";
+import MealDetail from "../views/MealDetail.vue";
 
 Vue.use(VueRouter);
 
@@ -11,6 +12,14 @@ Vue.use(VueRouter);
 // See https://stackoverflow.com/a/10473302/7742560 for a brief explanation of Client Side Routing.
 // TODO: define remaining routes.
 const routes = [
+  {
+    // The `:id` will automagically read the remaining part of the url and
+    // assign it to a variable stored under `$route.params.id`.
+    // For example, if we enter /meal/5, id will be set to 5.
+    path: "/meal/:id",
+    name: "MealDetail",
+    component: MealDetail,
+  },
   {
     path: "/search-results/",
     name: "SearchResults",
