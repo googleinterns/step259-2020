@@ -8,7 +8,9 @@
       placeholder="Search for what you want to eat..."
       :value="query()"
     />
-    <button v-on:click="submit" type="submit" id="search-icon"></button>
+    <button v-on:click="submit" type="submit">
+      <font-awesome-icon icon="search" />
+    </button>
   </div>
 </template>
 
