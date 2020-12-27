@@ -13,7 +13,9 @@
         <h2>Explore on a map:</h2>
         <Map :type="meal.type" />
       </div>
-      <ShowSimilarMealButton :currentMealId="Number.parseInt(meal.id)" />
+      <div id="similar-button-container">
+        <ShowSimilarMealButton :currentMealId="Number.parseInt(meal.id)" />
+      </div>
     </div>
     <div v-else>Waiting for the results...</div>
   </div>
@@ -55,3 +57,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+#similar-button-container {
+  margin: 20px;
+}
+</style>

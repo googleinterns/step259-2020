@@ -7,3 +7,10 @@ export default {
   name: "Home",
 };
 </script>
+
+<style scoped>
+#title {
+  font-size: 40px;
+  padding: 40px 10px;
+}
+</style>

@@ -44,7 +44,7 @@ export default {
 #map {
   border: thin solid black;
   height: 500px;
-  width: 80%;
   padding-bottom: 10px;
+  margin: auto;
 }
 </style>

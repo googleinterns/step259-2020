@@ -6,7 +6,7 @@
 -->
 <template>
   <!-- Top level div. All Vue rendered stuff will be under the "app" element -->
-  <div id="app">
+  <div id="app" :style="{ backgroundImage: `url(${backgroundImage})` }">
     <div id="content">
       <!-- Each page of our app shares some navigation-related things. Let's
           always render them at the very top.
@@ -42,6 +42,7 @@
 // `@` is an alias for "src/" (aka the main app directory).
 import SearchBar from "@/components/SearchBar.vue";
 import PhotoCopyright from "@/components/PhotoCopyright.vue";
+import backgroundImage from "../public/background-main.jpg";
 
 export default {
   name: "App",
@@ -49,28 +50,60 @@ export default {
     SearchBar,
     PhotoCopyright,
   },
+  computed: {
+    // This bit seems weird, and, to be honest, is weird, but one way to
+    // reference an image is to import it in the script, expose it as a
+    // property and reference it in the template.
+    // Yep, it's massively overcompliated. Luckily, images defined in a
+    // repo are not a common sight.
+    backgroundImage() {
+      return backgroundImage;
+    },
+  },
 };
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  width: 100%;
   text-align: center;
-  color: #2c3e50;
+  min-height: 100vh;
+  font-family: Georgia, serif;
+  color: black;
+  opacity: 0.75;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: right top;
+  background-attachment: fixed;
+
+  /* To be honest, noone really understands CSS.
+  Luckily, 99% of CSS problems can be solved by using flex.
+  https://developer.mozilla.org/en-US/docs/Web/CSS/flex
+  */
+  display: flex;
+  flex-direction: column;
 }
 
-#nav {
-  padding: 30px;
+#content {
+  width: 80%;
+  background: white;
+  /* auto margin centers the element horizontally */
+  margin: auto;
+}
+
+#header {
+  overflow: hidden;
+  font-size: 22px;
+  margin: 20px;
+}
+
+/* add some margin between children */
+#header > * {
+  margin: 10px;
 }
 
 #nav a {
   font-weight: bold;
   color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
 }
 </style>

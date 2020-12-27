@@ -47,3 +47,20 @@ export default {
   },
 };
 </script>
+
+<style>
+#search-bar {
+  display: flex;
+  height: 40px;
+  width: 80%;
+  margin: auto;
+}
+
+#search-bar > input {
+  flex: 4;
+}
+
+#search-bar > button {
+  flex: 1;
+}
+</style>

@@ -52,3 +52,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+#dishes-container > * {
+  margin: 20px 0;
+}
+</style>
