@@ -1,5 +1,7 @@
 <template>
-  <div id="meal-button"><button>Show similar meal!</button></div>
+  <div id="meal-button" v-on:click="redirectToSimilar">
+    <button>Show similar meal!</button>
+  </div>
 </template>
 
 <script>
