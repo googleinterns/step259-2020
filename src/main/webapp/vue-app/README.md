@@ -49,5 +49,6 @@ the app.
 ### TLDR
 ```
 cd meal-assistant-client
-npm run serve
+npm run install  # install all dependencies. They'll be installed to node_modules/.
+npm run serve  # compile the bundle and start a local server. The app will be accessible at localhost:8080
 ```
