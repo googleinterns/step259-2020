@@ -18,7 +18,7 @@ export default {
     redirectToSimilar: function () {
       const service = FakeMealService;
       service.getSimilar(this.currentMealId).then((similarMealId) => {
-        this.$router.push(`meal/${similarMealId}`);
+        this.$router.push(`/meal/${similarMealId}`);
       });
     },
   },

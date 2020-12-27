@@ -28,7 +28,7 @@ export default {
     submit: function () {
       const searchLine = document.getElementById("query").value;
       this.$router.push(
-        `search-results?query=${encodeURIComponent(searchLine)}`
+        `/search-results?query=${encodeURIComponent(searchLine)}`
       );
     },
     // `methods` can be used to render dynamic values in a template, based on the injected properties
