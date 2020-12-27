@@ -61,7 +61,7 @@ const fakeMealA = {
   id: 1,
   title: "MealA",
   description: "MealADescription",
-  ingredients: ["Ingredient1, Ingredient2"],
+  ingredients: ["Ingredient1", "Ingredient2"],
   type: "MealAType",
 };
 
@@ -69,6 +69,6 @@ const fakeMealB = {
   id: 2,
   title: "MealB",
   description: "MealBDescription",
-  ingredients: ["Ingredient3, Ingredient4"],
+  ingredients: ["Ingredient3", "Ingredient4"],
   type: "MealBType",
 };
