@@ -1,13 +1,15 @@
 <template>
   <div>
-    <div id="warning"></div>
-    <div id="map">todo</div>
+    <div v-if="warning" id="warning">
+      <b>Warning</b>
+      <span>{{ warning }}</span>
+    </div>
+    <div id="map"></div>
   </div>
 </template>
 
 <script>
-import { FakeMealService } from "@/logic/service";
-
+import { createMap } from "@/logic/map_utils";
 export default {
   props: {
     type: {
@@ -18,16 +20,31 @@ export default {
   data() {
     return {
       userLocation: null,
+      warning: null,
     };
   },
-  created() {
-    // This hook will be executed whenever we first render this component.
-    this.getUserLocation();
+  mounted() {
+    this.createMap();
   },
   methods: {
-    getUserLocation: function () {
-      // TODO
+    createMap: function () {
+      // Do the `getElementById` here, instead of inside the function - this
+      // way it will be easier to maintain the code, because both the element
+      // and the code referencing it are defined in the same file.
+      const mapElement = document.getElementById("map");
+      createMap(this.type, mapElement).then(
+        (geoWarning) => (this.warning = geoWarning)
+      );
     },
   },
 };
 </script>
+
+<style scoped>
+#map {
+  border: thin solid black;
+  height: 500px;
+  width: 80%;
+  padding-bottom: 10px;
+}
+</style>
