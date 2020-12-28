@@ -1,5 +1,6 @@
 <template>
   <div class="meal-detail">
+    <Header />
     <div v-if="this.meal">
       <h1 id="title">Best meal ever</h1>
       <div id="content">
@@ -24,12 +25,14 @@
 <script>
 import Map from "@/components/Map.vue";
 import ShowSimilarMealButton from "@/components/ShowSimilarMealButton.vue";
+import Header from "@/components/Header.vue";
 import { FakeMealService } from "@/logic/service";
 import { encodingCheck } from "@/logic/helpers";
 
 export default {
   name: "MealDetail",
   components: {
+    Header,
     Map,
     ShowSimilarMealButton,
   },

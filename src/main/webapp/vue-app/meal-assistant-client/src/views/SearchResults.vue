@@ -1,5 +1,6 @@
 <template>
   <div class="search-results">
+    <Header />
     <div v-if="this.results">
       <div id="amount-container">
         <div id="amount-block">{{ results.length }} result(s)</div>
@@ -20,11 +21,13 @@
 </template>
 
 <script>
+import Header from "@/components/Header.vue";
 import { FakeMealService } from "@/logic/service";
 import { getQueryParam, capitalizeItems } from "@/logic/helpers";
 
 export default {
   name: "SearchResults",
+  components: { Header },
   data() {
     return {
       results: null,

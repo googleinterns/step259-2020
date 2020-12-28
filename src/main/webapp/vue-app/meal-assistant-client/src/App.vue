@@ -8,23 +8,6 @@
   <!-- Top level div. All Vue rendered stuff will be under the "app" element -->
   <div id="app" :style="{ backgroundImage: `url(${backgroundImage})` }">
     <div id="content">
-      <!-- Each page of our app shares some navigation-related things. Let's
-          always render them at the very top.
-          Note, that our app uses a consistent layout on every subpage, which is
-          why we can simply define the shared bits here.
-          In more complex apps, is is more common for each View to define its
-          own layout, as it may differ across pages, e.g. a Meal form may not
-          contain a search bar.
-        -->
-      <div id="header">
-        <nav class="topnav">
-          <b> <a href="/"> Meal Assistant</a> </b>
-        </nav>
-        <div id="search-bar-block">
-          <SearchBar />
-        </div>
-      </div>
-
       <!-- This bit will dynamically render one of the components defined under
           views/ -->
       <router-view />
@@ -40,14 +23,12 @@
 
 <script>
 // `@` is an alias for "src/" (aka the main app directory).
-import SearchBar from "@/components/SearchBar.vue";
 import PhotoCopyright from "@/components/PhotoCopyright.vue";
 import backgroundImage from "../public/background-main.jpg";
 
 export default {
   name: "App",
   components: {
-    SearchBar,
     PhotoCopyright,
   },
   computed: {
