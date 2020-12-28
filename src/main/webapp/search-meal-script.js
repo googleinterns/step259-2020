@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// See a comment in meal-page-script.js
+const service = FakeMealService;
+
 function searchMeal() {
   const searchLine = getQueryParam("query");
-  fetch(`/meal?query=${searchLine}`)
-    .then((response) => response.json())
+  service.query(searchLine)
     .then((dishes) => {
       const amount = document.getElementById('amount-block');
       const isSingular = dishes.length == 1;
