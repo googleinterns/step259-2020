@@ -1,6 +1,7 @@
 import { render, fireEvent } from "@testing-library/vue";
 import App from "@/App.vue";
 import SearchResults from "@/views/SearchResults.vue";
+import Home from "@/views/Home.vue";
 
 // See https://testing-library.com/docs/vue-testing-library/examples for the testing API.
 test("renders the app", async () => {
@@ -13,7 +14,13 @@ test("renders the app", async () => {
           name: "SearchResults",
           component: SearchResults,
         },
+        {
+          path: "/",
+          name: "Home",
+          component: Home,
+        },
       ],
+      stubs: ["font-awesome-icon"],
     }
   );
 
